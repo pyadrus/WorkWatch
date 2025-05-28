@@ -2,23 +2,14 @@
 import asyncio
 import logging
 import sys
+
 from aiogram.filters import CommandStart
 from aiogram.types import Message
-from dispatcher import dp, bot
+from loguru import logger
+
+from database import recording_data_users_who_launched_bot
+from dispatcher import bot, dp
 from keyboards import start_keyboard
-from peewee import *
-
-db = SqliteDatabase('base.db')
-
-
-class Person(Model):
-    """База данных сотрудников, которые зарегистрировались в телеграмм боте"""
-    name = CharField() # имя сотрудника
-    peewee = CharField() # фамилия сотрудника
-
-    class Meta:
-        database = db
-        table_name = 'registered_users'
 
 
 @dp.message(CommandStart())
@@ -29,6 +20,11 @@ async def command_start_handler(message: Message) -> None:
     :param message: Сообщение от пользователя.
     :return: None
     """
+    id_user = message.from_user.id  # id пользователя, отправившего команду /start
+    logger.info(f'Пользователь {id_user} отправил команду /start')
+
+    recording_data_users_who_launched_bot(message)
+
     text = ('👋 Добро пожаловать в бот для учета сотрудников на рабочем месте!\n\n'
             'Этот бот помогает фиксировать ваше присутствие на рабочем месте и уведомлять коллег.\n\n'
 
