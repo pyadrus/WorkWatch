@@ -9,6 +9,7 @@ from loguru import logger
 
 from database import recording_data_users_who_launched_bot, registration_user
 from dispatcher import bot, dp
+from handlers.user.user import register_handlers_at_work
 from keyboards import start_keyboard
 
 
@@ -52,6 +53,8 @@ async def main() -> None:
     """
 
     await dp.start_polling(bot)
+
+    await register_handlers_at_work()
 
 
 if __name__ == "__main__":
