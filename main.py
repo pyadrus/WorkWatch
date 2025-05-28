@@ -7,7 +7,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from loguru import logger
 
-from database import recording_data_users_who_launched_bot
+from database import recording_data_users_who_launched_bot, registration_user
 from dispatcher import bot, dp
 from keyboards import start_keyboard
 
@@ -23,7 +23,10 @@ async def command_start_handler(message: Message) -> None:
     id_user = message.from_user.id  # id пользователя, отправившего команду /start
     logger.info(f'Пользователь {id_user} отправил команду /start')
 
+    # Записываем данные пользователя, который отправил команду /start
     recording_data_users_who_launched_bot(message)
+    # Записываем данные пользователя, который зарегистрировался в базе данных
+    registration_user(message)
 
     text = ('👋 Добро пожаловать в бот для учета сотрудников на рабочем месте!\n\n'
             'Этот бот помогает фиксировать ваше присутствие на рабочем месте и уведомлять коллег.\n\n'
