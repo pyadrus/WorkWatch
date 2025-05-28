@@ -6,6 +6,19 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from dispatcher import dp, bot
 from keyboards import start_keyboard
+from peewee import *
+
+db = SqliteDatabase('base.db')
+
+
+class Person(Model):
+    """База данных сотрудников, которые зарегистрировались в телеграмм боте"""
+    name = CharField() # имя сотрудника
+    peewee = CharField() # фамилия сотрудника
+
+    class Meta:
+        database = db
+        table_name = 'registered_users'
 
 
 @dp.message(CommandStart())
