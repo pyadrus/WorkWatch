@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from peewee import *
+from loguru import logger
 
 
 db = SqliteDatabase('base.db')
@@ -16,7 +18,7 @@ class Person(Model):
     """
     name = CharField()  # имя сотрудника
     surname = CharField()  # фамилия сотрудника
-    id_user = IntegerField(unique=True)  # id пользователя
+    id_user = IntegerField()  # id пользователя
 
     class Meta:
         database = db
@@ -30,10 +32,13 @@ def recording_data_users_who_launched_bot(message):
     Args:
         message: Объект сообщения, содержащий информацию о пользователе, который запустил бота
     """
-    db.create_tables([Person])
-    Person.create(name=message.from_user.first_name,
-                  surname=message.from_user.last_name,
-                  id_user=message.from_user.id)
+    try:
+        db.create_tables([Person])
+        Person.create(name=message.from_user.first_name,
+                      surname=message.from_user.last_name,
+                      id_user=message.from_user.id)
+    except Exception as error:
+        logger.exception(error)
 
 
 class RegisterUserBot(Model):
@@ -47,7 +52,7 @@ class RegisterUserBot(Model):
     """
     name = CharField()  # имя сотрудника
     surname = CharField()  # фамилия сотрудника
-    id_user = IntegerField(unique=True)  # id пользователя
+    id_user = IntegerField()  # id пользователя
 
     class Meta:
         database = db
@@ -61,10 +66,50 @@ def registration_user(message):
     Args:
         message: Объект сообщения, содержащий информацию о пользователе, который зарегистрировался в боте
     """
-    db.create_tables([RegisterUserBot])
-    RegisterUserBot.create(name=message.from_user.first_name,
-                           surname=message.from_user.last_name,
-                           id_user=message.from_user.id)
+    try:
+        db.create_tables([RegisterUserBot])
+        RegisterUserBot.create(name=message.from_user.first_name,
+                               surname=message.from_user.last_name,
+                               id_user=message.from_user.id)
+    except Exception as error:
+        logger.exception(error)
+
+
+class RecordDataWorkingStart(Model):
+    """
+    База данных сотрудников, которые начали работать
+
+    Attributes:
+       id_user (int): Уникальный идентификатор пользователя
+       time_start (str): Время начала работы
+    """
+    id_user = IntegerField()  # id пользователя
+    name = CharField()  # имя сотрудника
+    surname = CharField()  # фамилия сотрудника
+    store_address = CharField()  # адрес магазина
+    time_start = DateTimeField()  # время начала работы
+
+    class Meta:
+        database = db
+        table_name = 'working_start'
+
+
+def recording_working_start(callback_query, store_address):
+    """
+    Записывает в базу данных сотрудников, которые начали работать
+
+    Args:
+        message: Объект сообщения, содержащий информацию о пользователе, который начал работать
+    """
+    try:
+        db.create_tables([RecordDataWorkingStart])
+        RecordDataWorkingStart.create(id_user=callback_query.from_user.id,
+                                      name=callback_query.from_user.first_name,
+                                      surname=callback_query.from_user.last_name,
+                                      store_address=store_address,
+                                      time_start=datetime.now())
+    except Exception as error:
+        logger.exception(error)
 
 
 db.connect()

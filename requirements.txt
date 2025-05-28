@@ -1,4 +1,4 @@
 aiogram
 dotenv
-peewee
 loguru
+peewee
