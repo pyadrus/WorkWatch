@@ -11,10 +11,9 @@ from loguru import logger
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import CallbackQuery
 from dispatcher import router, bot
 from loguru import logger
-from aiogram.filters import StateFilter
 
 
 @router.callback_query(F.data == "at_work")
@@ -30,57 +29,22 @@ async def at_work(callback_query: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == "foundry_68")
 async def foundry_68(callback_query: CallbackQuery, state: FSMContext):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Литейная 68"""
-    await state.set_state("waiting_for_location")
-    await callback_query.message.answer("Пожалуйста, отправьте своё местоположение для регистрации.")
-
-    # try:
-    #     store_address = "Литейная 68"
-    #     await bot.send_message(
-    #         chat_id=callback_query.from_user.id,
-    #         text='Вы зарегистрированы. Хорошего дня!',
-    #         reply_markup=start_menu_keyboard()
-    #     )
-    #     location_user = callback_query.message.location.longitude
-    #     logger.info(f"location_user: {location_user}")
-    #     recording_working_start(callback_query, store_address)
-    #     await bot.send_message(
-    #         chat_id=-1002678330553,
-    #         text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}'
-    #     )
-    # except Exception as e:
-    #     logger.exception(e)
-
-
-@router.message(F.location, StateFilter("waiting_for_location"))
-async def handle_location(message: Message, state: FSMContext):
     try:
         store_address = "Литейная 68"
-        longitude = message.location.longitude
-        latitude = message.location.latitude
-        logger.info(
-            f"Получено местоположение: долгота={longitude}, широта={latitude}")
-
-        # Сохраняем данные о начале работы + координаты
-        # recording_working_start(message, store_address, longitude, latitude)
-
-        # Уведомление пользователю
-        await message.answer(
+        await bot.send_message(
+            chat_id=callback_query.from_user.id,
             text='Вы зарегистрированы. Хорошего дня!',
             reply_markup=start_menu_keyboard()
         )
-
-        # Оповещение админу
+        location_user = callback_query.message.location.longitude
+        logger.info(f"location_user: {location_user}")
+        recording_working_start(callback_query, store_address)
         await bot.send_message(
             chat_id=-1002678330553,
-            text=f'{message.from_user.full_name} пришел на работу {datetime.now()}. '
-            f'Координаты: {latitude}, {longitude}'
+            text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}'
         )
-
-        await state.clear()
-
     except Exception as e:
         logger.exception(e)
-        await message.answer("Произошла ошибка при обработке вашего местоположения.")
 
 
 @router.callback_query(F.data == "nikitin_5")
@@ -341,7 +305,5 @@ def register_handlers_at_work():
     router.callback_query.register(international_15, text="international_15")
     router.callback_query.register(international_25, text="international_25")
     router.callback_query.register(sosnovy_bor_1A, text="sosnovy_bor_1A")
-    router.callback_query.register(
-        stanke_dimitrova_67, text="stanke_dimitrova_67")
-    router.callback_query.register(
-        stanke_dimitrova_108b, text="stanke_dimitrova_108b")
+    router.callback_query.register(stanke_dimitrova_67, text="stanke_dimitrova_67")
+    router.callback_query.register(stanke_dimitrova_108b, text="stanke_dimitrova_108b")
