@@ -9,13 +9,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from loguru import logger
 
-from database import (RegisterUserBot, recording_data_users_who_launched_bot,
-                      registration_user)
+from database import (RegisterUserBot, db,
+                      recording_data_users_who_launched_bot)
 from dispatcher import bot, dp, router
 from handlers.user.user import register_handlers_at_work
 from handlers.user.user_registration import registration_handler_register_user
 from keyboards import register_user_keyboard, start_keyboard
-from database import db
+
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
@@ -30,10 +30,10 @@ async def command_start_handler(message: Message) -> None:
 
     # Записываем данные пользователя, который отправил команду /start
     recording_data_users_who_launched_bot(message)
-    
+
     db.create_tables([RegisterUserBot])
     user = RegisterUserBot.select().where(RegisterUserBot.id_user == id_user).first()
-    
+
     if user:
         print(user.name, user.surname)
         # Записываем данные пользователя, который зарегистрировался в базе данных
@@ -99,7 +99,7 @@ async def main() -> None:
     await dp.start_polling(bot)
 
     register_handlers_at_work()
-    
+
     # Запускаем функцию регистрации пользователя
     registration_handler_register_user()
 

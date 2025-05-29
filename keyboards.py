@@ -7,7 +7,7 @@ def register_user_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text='✅ Регистрация',
-                                  callback_data='registration'),],
+                                  callback_data='registration'), ],
         ]
     )
 
@@ -16,14 +16,14 @@ def start_menu_keyboard():
     """Клавиатура с кнопкой назад"""
     return InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(
-            text='⬅ Назад', callback_data='back')],]
+            text='⬅ Назад', callback_data='back')], ]
     )
 
 
 def start_keyboard():
     """Клавиатура главного меню бота"""
     return InlineKeyboardMarkup(
-        inline_keyboard=[[InlineKeyboardButton(text='Справка', callback_data='reference'),],
+        inline_keyboard=[[InlineKeyboardButton(text='Справка', callback_data='reference'), ],
                          [InlineKeyboardButton(text='✅ На работе', callback_data='at_work'),
                           InlineKeyboardButton(text="🏠 Ушёл", callback_data="left")]]
     )
@@ -71,15 +71,15 @@ def shops_keyboard():
             ],
 
             [InlineKeyboardButton(text='✅ Интернационала 15',
-                                  callback_data='international_15'),],
+                                  callback_data='international_15'), ],
             [InlineKeyboardButton(text='✅ Интернационала 25',
-                                  callback_data='international_25'),],
+                                  callback_data='international_25'), ],
             [InlineKeyboardButton(text='✅ Сосновый бор 1А',
-                                  callback_data='sosnovy_bor_1A'),],
+                                  callback_data='sosnovy_bor_1A'), ],
             [InlineKeyboardButton(text='✅ Станке Димитрова 67',
-                                  callback_data='stanke_dimitrova_67'),],
+                                  callback_data='stanke_dimitrova_67'), ],
             [InlineKeyboardButton(text='✅ Станке Димитрова 108Б',
-                                  callback_data='stanke_dimitrova_108b'),],
+                                  callback_data='stanke_dimitrova_108b'), ],
             [InlineKeyboardButton(text='⬅ Назад', callback_data='back')]
         ]
     )

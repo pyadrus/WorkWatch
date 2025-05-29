@@ -36,7 +36,7 @@ async def foundry_68(callback_query: CallbackQuery, state: FSMContext):
         recording_working_start(callback_query, store_address)
         await bot.send_message(
             chat_id=-1002678330553,
-            text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}'
+            text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}'
         )
     except Exception as e:
         logger.exception(e)
@@ -54,7 +54,7 @@ async def nikitin_5(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "moscow_154b")
@@ -69,7 +69,7 @@ async def moscow_154b(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "moscow_34")
@@ -84,7 +84,7 @@ async def moscow_34(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "aviation_5A")
@@ -99,7 +99,7 @@ async def aviation_5A(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "aviation_13a")
@@ -114,7 +114,7 @@ async def aviation_13a(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "telmana_68A")
@@ -129,7 +129,7 @@ async def telmana_68A(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "he_strokina_2")
@@ -144,7 +144,7 @@ async def he_strokina_2(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "bezitskaya_356a")
@@ -159,7 +159,7 @@ async def bezitskaya_356a(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "krakhmaleva_23")
@@ -174,7 +174,7 @@ async def krakhmaleva_23(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "pushkin_73")
@@ -189,7 +189,7 @@ async def pushkin_73(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "dukeeping_65")
@@ -204,7 +204,7 @@ async def dukeeping_65(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "international_15")
@@ -219,7 +219,7 @@ async def international_15(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "international_25")
@@ -234,7 +234,7 @@ async def international_25(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "sosnovy_bor_1A")
@@ -249,7 +249,7 @@ async def sosnovy_bor_1A(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "stanke_dimitrova_67")
@@ -264,7 +264,7 @@ async def stanke_dimitrova_67(callback_query: CallbackQuery, state: FSMContext):
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 @router.callback_query(F.data == "stanke_dimitrova_108b")
@@ -279,7 +279,7 @@ async def stanke_dimitrova_108b(callback_query: CallbackQuery, state: FSMContext
     recording_working_start(callback_query, store_address)
     await bot.send_message(
         chat_id=-1002678330553,
-        text=f'{callback_query.from_user.first_name, }, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
+        text=f'{callback_query.from_user.first_name,}, {callback_query.from_user.last_name} пришел на работу {datetime.now()}')
 
 
 def register_handlers_at_work():

@@ -51,14 +51,14 @@ class RegisterUserBot(Model):
        id_user (int): Уникальный идентификатор пользователя
     """
     id_user = IntegerField()  # id пользователя
-    name_telegram = CharField() # имя аккаунта телеграмм 
-    surname_telegram = CharField() # фамилия аккаунта Telegram
-    username = CharField() # username аккаунта Telegram
+    name_telegram = CharField()  # имя аккаунта телеграмм
+    surname_telegram = CharField()  # фамилия аккаунта Telegram
+    username = CharField()  # username аккаунта Telegram
     name = CharField()  # имя сотрудника
     surname = CharField()  # фамилия сотрудника
-    phone = CharField() # телефон сотрудника
-    registration_date = CharField() # дата регистрации
-    
+    phone = CharField()  # телефон сотрудника
+    registration_date = CharField()  # дата регистрации
+
     class Meta:
         database = db
         table_name = 'registered_users'
@@ -74,14 +74,14 @@ def registration_user(message, name, surname, phone):
     try:
         db.create_tables([RegisterUserBot])
         RegisterUserBot.create(
-            id_user=message.from_user.id, 
+            id_user=message.from_user.id,
             name_telegram=message.from_user.first_name,
             surname_telegram=message.from_user.last_name,
-            username = message.from_user.username,
-            name = name,
-            surname = surname,
-            phone = phone,
-            registration_date=datetime.now() )
+            username=message.from_user.username,
+            name=name,
+            surname=surname,
+            phone=phone,
+            registration_date=datetime.now())
     except Exception as error:
         logger.exception(error)
 

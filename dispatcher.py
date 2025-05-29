@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env')
 TOKEN = os.getenv('BOT_TOKEN')  # Токен бота
 
-
 dp = Dispatcher()
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
