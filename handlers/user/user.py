@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
+from loguru import logger
 
 from database import recording_working_start
-from dispatcher import router, bot
+from dispatcher import bot, router
 from keyboards import shops_keyboard, start_menu_keyboard
-from datetime import datetime
-from loguru import logger
-from aiogram import F
-from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery
-from aiogram.types import CallbackQuery
-from dispatcher import router, bot
-from loguru import logger
 
 
 @router.callback_query(F.data == "at_work")
@@ -305,5 +300,7 @@ def register_handlers_at_work():
     router.callback_query.register(international_15, text="international_15")
     router.callback_query.register(international_25, text="international_25")
     router.callback_query.register(sosnovy_bor_1A, text="sosnovy_bor_1A")
-    router.callback_query.register(stanke_dimitrova_67, text="stanke_dimitrova_67")
-    router.callback_query.register(stanke_dimitrova_108b, text="stanke_dimitrova_108b")
+    router.callback_query.register(
+        stanke_dimitrova_67, text="stanke_dimitrova_67")
+    router.callback_query.register(
+        stanke_dimitrova_108b, text="stanke_dimitrova_108b")

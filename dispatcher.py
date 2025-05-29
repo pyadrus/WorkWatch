@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 import os
-from aiogram import Bot, Dispatcher
+
+from aiogram import Bot, Dispatcher, Router
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram import Router
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path='.env')

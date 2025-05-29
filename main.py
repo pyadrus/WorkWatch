@@ -2,17 +2,20 @@
 import asyncio
 import logging
 import sys
-from aiogram import F
-from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery
-from aiogram.types import Message, CallbackQuery
-from dispatcher import router, bot, dp
-from aiogram.filters import CommandStart
-from loguru import logger
-from database import recording_data_users_who_launched_bot, RegisterUserBot, registration_user
-from handlers.user.user import register_handlers_at_work
-from keyboards import start_keyboard
 
+from aiogram import F
+from aiogram.filters import CommandStart
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
+from loguru import logger
+
+from database import (RegisterUserBot, recording_data_users_who_launched_bot,
+                      registration_user)
+from dispatcher import bot, dp, router
+from handlers.user.user import register_handlers_at_work
+from handlers.user.user_registration import registration_handler_register_user
+from keyboards import register_user_keyboard, start_keyboard
+from database import db
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
@@ -27,12 +30,13 @@ async def command_start_handler(message: Message) -> None:
 
     # Записываем данные пользователя, который отправил команду /start
     recording_data_users_who_launched_bot(message)
-
+    
+    db.create_tables([RegisterUserBot])
     user = RegisterUserBot.select().where(RegisterUserBot.id_user == id_user).first()
+    
     if user:
         print(user.name, user.surname)
         # Записываем данные пользователя, который зарегистрировался в базе данных
-        registration_user(message)
         text = ('👋 Добро пожаловать в бот для учета сотрудников на рабочем месте!\n\n'
                 'Этот бот помогает фиксировать ваше присутствие на рабочем месте и уведомлять коллег.\n\n'
 
@@ -50,7 +54,7 @@ async def command_start_handler(message: Message) -> None:
     else:
         print("Пользователь не найден.")
         text = ('Для использования бота, пройдите регистрацию')
-        await bot.send_message(chat_id=message.chat.id, text=text)
+        await bot.send_message(chat_id=message.chat.id, text=text, reply_markup=register_user_keyboard())
 
 
 @router.callback_query(F.data == 'back')
@@ -94,7 +98,10 @@ async def main() -> None:
 
     await dp.start_polling(bot)
 
-    await register_handlers_at_work()
+    register_handlers_at_work()
+    
+    # Запускаем функцию регистрации пользователя
+    registration_handler_register_user()
 
 
 if __name__ == "__main__":

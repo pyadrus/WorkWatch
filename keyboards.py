@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+
+def register_user_keyboard():
+    """Клавиатура регистрации пользователя"""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text='✅ Регистрация',
+                                  callback_data='registration'),],
+        ]
+    )
 
 
 def start_menu_keyboard():

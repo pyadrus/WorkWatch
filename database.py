@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from peewee import *
-from loguru import logger
 
+from loguru import logger
+from peewee import *
 
 db = SqliteDatabase('base.db')
 
@@ -50,16 +50,21 @@ class RegisterUserBot(Model):
        surname (str): Фамилия сотрудника
        id_user (int): Уникальный идентификатор пользователя
     """
+    id_user = IntegerField()  # id пользователя
+    name_telegram = CharField() # имя аккаунта телеграмм 
+    surname_telegram = CharField() # фамилия аккаунта Telegram
+    username = CharField() # username аккаунта Telegram
     name = CharField()  # имя сотрудника
     surname = CharField()  # фамилия сотрудника
-    id_user = IntegerField()  # id пользователя
-
+    phone = CharField() # телефон сотрудника
+    registration_date = CharField() # дата регистрации
+    
     class Meta:
         database = db
         table_name = 'registered_users'
 
 
-def registration_user(message):
+def registration_user(message, name, surname, phone):
     """
     Записывает в базу данных сотрудников, которые зарегистрировались в Telegram боте
 
@@ -68,9 +73,15 @@ def registration_user(message):
     """
     try:
         db.create_tables([RegisterUserBot])
-        RegisterUserBot.create(name=message.from_user.first_name,
-                               surname=message.from_user.last_name,
-                               id_user=message.from_user.id)
+        RegisterUserBot.create(
+            id_user=message.from_user.id, 
+            name_telegram=message.from_user.first_name,
+            surname_telegram=message.from_user.last_name,
+            username = message.from_user.username,
+            name = name,
+            surname = surname,
+            phone = phone,
+            registration_date=datetime.now() )
     except Exception as error:
         logger.exception(error)
 
