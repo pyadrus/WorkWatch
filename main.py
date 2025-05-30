@@ -9,8 +9,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from loguru import logger
 
-from database import (RegisterUserBot, db,
-                      recording_data_users_who_launched_bot)
+from database import RegisterUserBot, db, recording_data_users_who_launched_bot
 from dispatcher import bot, dp, router
 from handlers.user.user import register_handlers_at_work
 from handlers.user.user_registration import registration_handler_register_user
@@ -72,7 +71,7 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
             'Этот бот помогает фиксировать ваше присутствие на рабочем месте и уведомлять коллег.\n\n'
 
             '📌 Основные команды:\n'
-            '✅ "На работе" — зарегистрировать приход. Укажите ваши ФИО и адрес магазина (из списка).\n'
+            '✅ "На работе" — зарегистрировать приход. Выберите адрес магазина (из списка).\n'
             '🏠 "Ушёл" — зарегистрировать уход.\n'
             '📖 "Справка" — повторно показать это сообщение.\n\n'
 
