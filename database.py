@@ -57,6 +57,7 @@ class RegisterUserBot(Model):
     name = CharField()  # имя сотрудника
     surname = CharField()  # фамилия сотрудника
     phone = CharField()  # телефон сотрудника
+    gender = CharField()  # пол сотрудника
     registration_date = CharField()  # дата регистрации
 
     class Meta:
@@ -64,7 +65,7 @@ class RegisterUserBot(Model):
         table_name = 'registered_users'
 
 
-def registration_user(message, name, surname, phone):
+def registration_user(callback, name, surname, phone, gender):
     """
     Записывает в базу данных сотрудников, которые зарегистрировались в Telegram боте
 
@@ -74,13 +75,14 @@ def registration_user(message, name, surname, phone):
     try:
         db.create_tables([RegisterUserBot])
         RegisterUserBot.create(
-            id_user=message.from_user.id,
-            name_telegram=message.from_user.first_name,
-            surname_telegram=message.from_user.last_name,
-            username=message.from_user.username,
+            id_user=callback.from_user.id,
+            name_telegram=callback.from_user.first_name,
+            surname_telegram=callback.from_user.last_name,
+            username=callback.from_user.username,
             name=name,
             surname=surname,
             phone=phone,
+            gender=gender,
             registration_date=datetime.now())
     except Exception as error:
         logger.exception(error)
