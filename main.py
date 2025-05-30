@@ -11,8 +11,9 @@ from loguru import logger
 
 from database import RegisterUserBot, db, recording_data_users_who_launched_bot
 from dispatcher import bot, dp, router
-from handlers.user.user import register_handlers_at_work
+from handlers.user.user_end import register_handlers_left
 from handlers.user.user_registration import registration_handler_register_user
+from handlers.user.user_start import register_handlers_at_work
 from keyboards import register_user_keyboard, start_keyboard
 
 
@@ -94,6 +95,8 @@ async def main() -> None:
     register_handlers_at_work()
     # Запускаем функцию регистрации пользователя
     registration_handler_register_user()
+    # Запускаем функцию регистрации пользователя, которые ушли
+    register_handlers_left()
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ from loguru import logger
 
 from database import RegisterUserBot, db, recording_working_start
 from dispatcher import bot, router
-from keyboards import shops_keyboard, start_menu_keyboard
+from keyboards import shops_keyboard_start, start_menu_keyboard
 
 
 @router.callback_query(F.data == "at_work")
@@ -17,7 +17,7 @@ async def at_work(callback_query: CallbackQuery, state: FSMContext):
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text='Выберите из списка адрес магазина',
-        reply_markup=shops_keyboard()
+        reply_markup=shops_keyboard_start()
     )
 
 
