@@ -2,7 +2,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-
 def gender_keyboard():
     buttons = [
         [InlineKeyboardButton(text="Мужской", callback_data="gender_male")],

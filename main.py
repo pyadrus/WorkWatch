@@ -68,11 +68,6 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
     id_user = callback_query.from_user.id  # id пользователя, отправившего команду /start
     logger.info(f'Пользователь {id_user} отправил команду /start')
 
-    # Записываем данные пользователя, который отправил команду /start
-    # recording_data_users_who_launched_bot(message)
-    # Записываем данные пользователя, который зарегистрировался в базе данных
-    # registration_user(message)
-
     text = ('👋 Добро пожаловать в бот для учета сотрудников на рабочем месте!\n\n'
             'Этот бот помогает фиксировать ваше присутствие на рабочем месте и уведомлять коллег.\n\n'
 
@@ -95,15 +90,16 @@ async def main() -> None:
 
     :return: None
     """
-
     await dp.start_polling(bot)
-
+    # Запускаем функцию регистрации пользователя, которые на работе
     register_handlers_at_work()
-
     # Запускаем функцию регистрации пользователя
     registration_handler_register_user()
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logger.warning("Бот остановлен!")
