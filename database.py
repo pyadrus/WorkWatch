@@ -99,15 +99,17 @@ class RecordDataWorkingStart(Model):
     id_user = IntegerField()  # id пользователя
     name = CharField()  # имя сотрудника
     surname = CharField()  # фамилия сотрудника
+    event_user = CharField()  # событие пользователя
     store_address = CharField()  # адрес магазина
+    phone = CharField()  # телефон сотрудника
     time_start = DateTimeField()  # время начала работы
 
     class Meta:
         database = db
-        table_name = 'working_start'
+        table_name = 'working_user'
 
 
-def recording_working_start(callback_query, store_address):
+def recording_working_start(callback_query, name, surname, event_user, store_address, phone):
     """
     Записывает в базу данных сотрудников, которые начали работать
 
@@ -117,9 +119,11 @@ def recording_working_start(callback_query, store_address):
     try:
         db.create_tables([RecordDataWorkingStart])
         RecordDataWorkingStart.create(id_user=callback_query.from_user.id,
-                                      name=callback_query.from_user.first_name,
-                                      surname=callback_query.from_user.last_name,
+                                      name=name,
+                                      surname=surname,
+                                      event_user=event_user,
                                       store_address=store_address,
+                                      phone=phone,
                                       time_start=datetime.now())
     except Exception as error:
         logger.exception(error)
