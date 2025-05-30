@@ -13,6 +13,7 @@ from database import RegisterUserBot, db, recording_data_users_who_launched_bot
 from dispatcher import bot, dp, router
 from handlers.admin.admin import register_handler_who_at_work
 from handlers.user.user_end import register_handlers_left
+from handlers.user.user_reference import register_handler_reference
 from handlers.user.user_registration import registration_handler_register_user
 from handlers.user.user_start import register_handlers_at_work
 from keyboards import register_user_keyboard, start_keyboard
@@ -100,6 +101,8 @@ async def main() -> None:
     register_handlers_left()
     # Запускаем функцию регистрации пользователя, которые на работе
     register_handler_who_at_work()
+    # Регистрация справки
+    register_handler_reference()
 
 
 if __name__ == "__main__":

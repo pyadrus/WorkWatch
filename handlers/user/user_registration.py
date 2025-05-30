@@ -73,11 +73,12 @@ async def handle_registration_gender(callback: CallbackQuery, state: FSMContext)
         user_surname = data.get('user_surname')
         user_phone = data.get('user_phone')
 
-        logger.info(f'User: {user_name}, {user_surname}, {user_phone}, {gender}')
+        logger.info(
+            f'User: {user_name}, {user_surname}, {user_phone}, {gender}')
 
         # Сохраняем пользователя в БД
         registration_user(callback=callback, name=user_name,
-                        surname=user_surname, phone=user_phone, gender=gender)
+                          surname=user_surname, phone=user_phone, gender=gender)
 
         await state.clear()
 

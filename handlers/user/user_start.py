@@ -68,7 +68,8 @@ async def foundry_68(callback_query: CallbackQuery, state: FSMContext):
         )
 
         name, surname, event_user, phone = await send_user_registration_message(callback_query, "Литейная 68")
-        recording_working_start(callback_query, name, surname, event_user, "Литейная 68", phone)
+        recording_working_start(callback_query, name,
+                                surname, event_user, "Литейная 68", phone)
     except Exception as e:
         logger.exception(e)
 
@@ -82,7 +83,8 @@ async def nikitin_5(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Никитина 5")
-    recording_working_start(callback_query, name, surname, event_user, "Никитина 5", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Никитина 5", phone)
 
 
 @router.callback_query(F.data == "moscow_154b")
@@ -94,7 +96,8 @@ async def moscow_154b(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Московский 154Б")
-    recording_working_start(callback_query, name, surname, event_user, "Московский 154Б", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Московский 154Б", phone)
 
 
 @router.callback_query(F.data == "moscow_34")
@@ -106,7 +109,9 @@ async def moscow_34(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Московский 34")
-    recording_working_start(callback_query, name, surname, event_user, "Московский 34", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Московский 34", phone)
+
 
 @router.callback_query(F.data == "aviation_5A")
 async def aviation_5A(callback_query: CallbackQuery, state: FSMContext):
@@ -117,7 +122,8 @@ async def aviation_5A(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Авиационная 5А")
-    recording_working_start(callback_query, name, surname, event_user, "Авиационная 5А", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Авиационная 5А", phone)
 
 
 @router.callback_query(F.data == "aviation_13a")
@@ -129,7 +135,8 @@ async def aviation_13a(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Авиационная 13А")
-    recording_working_start(callback_query, name, surname, event_user, "Авиационная 13А", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Авиационная 13А", phone)
 
 
 @router.callback_query(F.data == "telmana_68A")
@@ -141,7 +148,8 @@ async def telmana_68A(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Тельмана 68А")
-    recording_working_start(callback_query, name, surname, event_user, "Тельмана 68А", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Тельмана 68А", phone)
 
 
 @router.callback_query(F.data == "he_strokina_2")
@@ -153,7 +161,8 @@ async def he_strokina_2(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "О.Н. Строкина 2")
-    recording_working_start(callback_query, name, surname, event_user, "О.Н. Строкина 2", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "О.Н. Строкина 2", phone)
 
 
 @router.callback_query(F.data == "bezitskaya_356a")
@@ -165,7 +174,8 @@ async def bezitskaya_356a(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Бежицкая 356а")
-    recording_working_start(callback_query, name, surname, event_user, "Бежицкая 356а", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Бежицкая 356а", phone)
 
 
 @router.callback_query(F.data == "krakhmaleva_23")
@@ -177,7 +187,8 @@ async def krakhmaleva_23(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Крахмалёва 23")
-    recording_working_start(callback_query, name, surname, event_user, "Крахмалёва 23", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Крахмалёва 23", phone)
 
 
 @router.callback_query(F.data == "pushkin_73")
@@ -189,7 +200,8 @@ async def pushkin_73(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Пушкина 73")
-    recording_working_start(callback_query, name, surname, event_user, "Пушкина 73", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Пушкина 73", phone)
 
 
 @router.callback_query(F.data == "dukeeping_65")
@@ -201,7 +213,8 @@ async def dukeeping_65(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Дуки 65")
-    recording_working_start(callback_query, name, surname, event_user, "Дуки 65", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Дуки 65", phone)
 
 
 @router.callback_query(F.data == "international_15")
@@ -213,7 +226,8 @@ async def international_15(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Интернационала 15")
-    recording_working_start(callback_query, name, surname, event_user, "Интернационала 15", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Интернационала 15", phone)
 
 
 @router.callback_query(F.data == "international_25")
@@ -225,7 +239,8 @@ async def international_25(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Интернационала 25")
-    recording_working_start(callback_query, name, surname, event_user, "Интернационала 25", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Интернационала 25", phone)
 
 
 @router.callback_query(F.data == "sosnovy_bor_1A")
@@ -237,7 +252,8 @@ async def sosnovy_bor_1A(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Сосновый бор 1А")
-    recording_working_start(callback_query, name, surname, event_user, "Сосновый бор 1А", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Сосновый бор 1А", phone)
 
 
 @router.callback_query(F.data == "stanke_dimitrova_67")
@@ -249,7 +265,8 @@ async def stanke_dimitrova_67(callback_query: CallbackQuery, state: FSMContext):
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Станке Димитрова 67")
-    recording_working_start(callback_query, name, surname, event_user, "Станке Димитрова 67", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Станке Димитрова 67", phone)
 
 
 @router.callback_query(F.data == "stanke_dimitrova_108b")
@@ -261,7 +278,8 @@ async def stanke_dimitrova_108b(callback_query: CallbackQuery, state: FSMContext
         reply_markup=start_menu_keyboard()
     )
     name, surname, event_user, phone = await send_user_registration_message(callback_query, "Станке Димитрова 108Б")
-    recording_working_start(callback_query, name, surname, event_user, "Станке Димитрова 108Б", phone)
+    recording_working_start(callback_query, name, surname,
+                            event_user, "Станке Димитрова 108Б", phone)
 
 
 def register_handlers_at_work():

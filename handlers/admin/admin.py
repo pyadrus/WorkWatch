@@ -14,7 +14,7 @@ from keyboards import shops_keyboard_end, start_menu_keyboard
 
 @router.callback_query(F.data == "who_at_work")
 async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
-    """✅ Регистрация пользователей и запись данных в базу данных"""
+    """✅ Получение пользователей, которые на работе"""
 
     current_date = date.today()
 
