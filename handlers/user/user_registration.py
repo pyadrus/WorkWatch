@@ -1,20 +1,13 @@
 # -*- coding: utf-8 -*-
 from aiogram import F
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
 from loguru import logger
 
 from database import registration_user
 from dispatcher import bot, router
 from keyboards import gender_keyboard, start_keyboard
-
-
-class RegisterState(StatesGroup):
-    name = State()  # имя пользователя
-    surname = State()  # фамилия пользователя
-    phone = State()  # номер телефона пользователя
-    gender = State()  # пол пользователя
+from states.states import RegisterState
 
 
 @router.callback_query(F.data == 'registration')
