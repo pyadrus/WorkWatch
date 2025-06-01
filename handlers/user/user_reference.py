@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
-from loguru import logger
 
-from database import RegisterUserBot, db, recording_working_start
 from dispatcher import bot, router
-from keyboards import shops_keyboard_start, start_menu_keyboard
-from handlers.admin.admin import register_handler_who_at_work
+from keyboards import start_menu_keyboard
 
 
 @router.callback_query(F.data == "reference")

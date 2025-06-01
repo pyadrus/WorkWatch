@@ -6,10 +6,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from loguru import logger
 
-from database import (RecordDataWorkingStart, RegisterUserBot, db,
-                      recording_working_start)
+from database import (RecordDataWorkingStart)
 from dispatcher import bot, router
-from keyboards import shops_keyboard_end, start_menu_keyboard
+from keyboards import start_menu_keyboard
 
 
 @router.callback_query(F.data == "who_at_work")
