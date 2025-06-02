@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from loguru import logger
 
-from database import (RecordDataWorkingStart)
+from database import RecordDataWorkingStart
 from dispatcher import bot, router
 from keyboards import start_menu_keyboard
 

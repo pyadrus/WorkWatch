@@ -67,23 +67,42 @@ class RegisterUserBot(Model):
 
 def registration_user(callback, name, surname, phone, gender):
     """
-    Записывает в базу данных сотрудников, которые зарегистрировались в Telegram боте
+    Записывает или обновляет данные сотрудника в базе данных,
+    если он зарегистрировался в Telegram боте.
 
     Args:
-        message: Объект сообщения, содержащий информацию о пользователе, который зарегистрировался в боте
+        callback: Объект колбэка, содержащий информацию о пользователе.
+        name (str): Имя сотрудника.
+        surname (str): Фамилия сотрудника.
+        phone (str): Телефон сотрудника.
+        gender (str): Пол сотрудника.
     """
     try:
         db.create_tables([RegisterUserBot])
-        RegisterUserBot.create(
+        user, created = RegisterUserBot.get_or_create(
             id_user=callback.from_user.id,
-            name_telegram=callback.from_user.first_name,
-            surname_telegram=callback.from_user.last_name,
-            username=callback.from_user.username,
-            name=name,
-            surname=surname,
-            phone=phone,
-            gender=gender,
-            registration_date=datetime.now())
+            defaults={
+                'name_telegram': callback.from_user.first_name,
+                'surname_telegram': callback.from_user.last_name,
+                'username': callback.from_user.username,
+                'name': name,
+                'surname': surname,
+                'phone': phone,
+                'gender': gender,
+                'registration_date': datetime.now()
+            }
+        )
+        if not created:
+            # Если пользователь уже существует — обновляем его данные
+            user.name_telegram = callback.from_user.first_name
+            user.surname_telegram = callback.from_user.last_name
+            user.username = callback.from_user.username
+            user.name = name
+            user.surname = surname
+            user.phone = phone
+            user.gender = gender
+            user.registration_date = datetime.now()
+            user.save()
     except Exception as error:
         logger.exception(error)
 
