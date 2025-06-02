@@ -1,14 +1,75 @@
 # -*- coding: utf-8 -*-
 from datetime import date, datetime
-
+from aiogram.types import BufferedInputFile
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from loguru import logger
-
-from database import RecordDataWorkingStart
+from database import RecordDataWorkingStart, RegisterUserBot
 from dispatcher import bot, router
-from keyboards import start_menu_keyboard
+from keyboards import admin_keyboard, start_menu_keyboard
+from aiogram.types import CallbackQuery
+from openpyxl import Workbook
+from io import BytesIO
+from datetime import datetime
+
+
+@router.callback_query(F.data == "get_register_users")
+async def get_register_users(callback_query: CallbackQuery, state: FSMContext):
+    """✅ Получение списка зарегистрированных пользователей"""
+    await state.clear()
+    # Получаем всех пользователей из базы данных
+    users = list(RegisterUserBot.select().dicts())
+    if not users:
+        await callback_query.message.answer("⚠️ Нет зарегистрированных пользователей.")
+        return
+    # Создаём Excel-файл с помощью openpyxl
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Пользователи"
+    # Заголовки таблицы (можно менять на русские названия)
+    headers = ["ID пользователя", "Имя Telegram",
+               "Фамилия Telegram", "Username",
+               "Имя сотрудника", "Фамилия сотрудника",
+               "Телефон", "Пол",
+               "Дата регистрации"
+               ]
+    # Добавляем заголовки
+    ws.append(headers)
+    # Добавляем данные
+    for user in users:
+        ws.append([user['id_user'], user['name_telegram'],
+                   user['surname_telegram'], user['username'],
+                   user['name'], user['surname'],
+                   user['phone'], user['gender'],
+                   user['registration_date'],
+                   ])
+    # Сохраняем в буфер
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+    # Формируем имя файла
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    filename = f"registered_users_{date_str}.xlsx"
+    # Создаем BufferedInputFile
+    document = BufferedInputFile(file=file_stream.read(), filename=filename)
+    # document = FSInputFile(filename)
+    # Отправляем как документ
+    await bot.send_document(
+        chat_id=callback_query.from_user.id,
+        document=document,
+        caption="📊 Список зарегистрированных пользователей"
+    )
+
+
+@router.callback_query(F.data == "admin_panel")
+async def admin_panel(callback_query: CallbackQuery, state: FSMContext):
+    """✅ Панель администратора"""
+    await state.clear()
+    message_text = ('✅ Панель администратора\n\n'
+                    '📊 Список зарегистрированных пользователей\n'
+                    '🏠 Список сотрудников на работе')
+    await bot.send_message(chat_id=callback_query.from_user.id, text=message_text,  reply_markup=admin_keyboard())
 
 
 @router.callback_query(F.data == "who_at_work")
@@ -72,3 +133,6 @@ async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
 def register_handler_who_at_work():
     """Регистрация хендлера, кто на работе"""
     router.callback_query.register(who_at_work, F.data == "who_at_work")
+    router.callback_query.register(admin_panel, F.data == "admin_panel")
+    router.callback_query.register(
+        get_register_users, F.data == "get_register_users")
