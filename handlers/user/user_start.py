@@ -300,7 +300,5 @@ def register_handlers_at_work():
     router.callback_query.register(international_15, text="international_15")
     router.callback_query.register(international_25, text="international_25")
     router.callback_query.register(sosnovy_bor_1A, text="sosnovy_bor_1A")
-    router.callback_query.register(
-        stanke_dimitrova_67, text="stanke_dimitrova_67")
-    router.callback_query.register(
-        stanke_dimitrova_108b, text="stanke_dimitrova_108b")
+    router.callback_query.register(stanke_dimitrova_67, text="stanke_dimitrova_67")
+    router.callback_query.register(stanke_dimitrova_108b, text="stanke_dimitrova_108b")

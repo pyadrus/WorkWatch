@@ -27,38 +27,28 @@ async def get_register_users(callback_query: CallbackQuery, state: FSMContext):
     wb = Workbook()
     ws = wb.active
     ws.title = "Пользователи"
-    # Заголовки таблицы (можно менять на русские названия)
-    headers = ["ID пользователя", "Имя Telegram",
-               "Фамилия Telegram", "Username",
-               "Имя сотрудника", "Фамилия сотрудника",
-               "Телефон", "Пол",
-               "Дата регистрации"
-               ]
     # Добавляем заголовки
-    ws.append(headers)
+    ws.append(["ID пользователя", "Имя Telegram", "Фамилия Telegram", "Username",
+              "Имя сотрудника", "Фамилия сотрудника", "Телефон", "Пол", "Дата регистрации"])
     # Добавляем данные
     for user in users:
-        ws.append([user['id_user'], user['name_telegram'],
-                   user['surname_telegram'], user['username'],
-                   user['name'], user['surname'],
-                   user['phone'], user['gender'],
-                   user['registration_date'],
+        ws.append([
+            user['id_user'], user['name_telegram'], user['surname_telegram'], user['username'], 
+            user['name'], user['surname'], user['phone'], user['gender'], user['registration_date'],
                    ])
     # Сохраняем в буфер
     file_stream = BytesIO()
     wb.save(file_stream)
     file_stream.seek(0)
-    # Формируем имя файла
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    filename = f"registered_users_{date_str}.xlsx"
+    filename = f"registered_users_{datetime.now().strftime("%Y-%m-%d")}.xlsx"
     # Создаем BufferedInputFile
     document = BufferedInputFile(file=file_stream.read(), filename=filename)
-    # document = FSInputFile(filename)
     # Отправляем как документ
     await bot.send_document(
         chat_id=callback_query.from_user.id,
         document=document,
-        caption="📊 Список зарегистрированных пользователей"
+        caption="📊 Список зарегистрированных пользователей",
+        reply_markup=start_menu_keyboard()
     )
 
 
@@ -134,5 +124,4 @@ def register_handler_who_at_work():
     """Регистрация хендлера, кто на работе"""
     router.callback_query.register(who_at_work, F.data == "who_at_work")
     router.callback_query.register(admin_panel, F.data == "admin_panel")
-    router.callback_query.register(
-        get_register_users, F.data == "get_register_users")
+    router.callback_query.register(get_register_users, F.data == "get_register_users")
