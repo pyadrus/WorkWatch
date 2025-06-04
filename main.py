@@ -16,7 +16,8 @@ from handlers.user.user_end import register_handlers_left
 from handlers.user.user_reference import register_handler_reference
 from handlers.user.user_registration import registration_handler_register_user
 from handlers.user.user_start import register_handlers_at_work
-from keyboards import register_admin_keyboard, register_user_keyboard, start_keyboard
+from keyboards.admin import register_admin_keyboard
+from keyboards.keyboards import register_user_keyboard, start_keyboard
 
 
 @dp.message(CommandStart())
@@ -29,13 +30,10 @@ async def command_start_handler(message: Message) -> None:
     """
     id_user = message.from_user.id  # id пользователя, отправившего команду /start
     logger.info(f"Пользователь {id_user} отправил команду /start")
-
     # Записываем данные пользователя, который отправил команду /start
     recording_data_users_who_launched_bot(message)
-
     db.create_tables([RegisterUserBot])
     user = RegisterUserBot.select().where(RegisterUserBot.id_user == id_user).first()
-
     text = (
         "👋 Добро пожаловать в бот для учета сотрудников на рабочем месте!\n\n"
         "Этот бот помогает фиксировать ваше присутствие на рабочем месте и уведомлять коллег.\n\n"
@@ -49,7 +47,6 @@ async def command_start_handler(message: Message) -> None:
         "⚠️ Важно: Доступ к боту только для сотрудников компании.\n\n"
         " Хорошего дня! 😊"
     )
-
     if user:
         if message.from_user.id == 535185511:
             await bot.send_message(
@@ -60,7 +57,6 @@ async def command_start_handler(message: Message) -> None:
         else:
             print(user.name, user.surname)
             # Записываем данные пользователя, который зарегистрировался в базе данных
-
             await bot.send_message(
                 chat_id=message.chat.id, text=text, reply_markup=start_keyboard()
             )
@@ -86,7 +82,6 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
         callback_query.from_user.id
     )  # id пользователя, отправившего команду /start
     logger.info(f"Пользователь {id_user} отправил команду /start")
-
     text = (
         "👋 Добро пожаловать в бот для учета сотрудников на рабочем месте!\n\n"
         "Этот бот помогает фиксировать ваше присутствие на рабочем месте и уведомлять коллег.\n\n"
@@ -100,7 +95,6 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
         "⚠️ Важно: Доступ к боту только для сотрудников компании.\n\n"
         " Хорошего дня! 😊"
     )
-
     if callback_query.from_user.id == 535185511:
         await bot.send_message(
             chat_id=callback_query.from_user.id,

@@ -6,7 +6,7 @@ from loguru import logger
 
 from database import registration_user
 from dispatcher import bot, router
-from keyboards import gender_keyboard, start_keyboard
+from keyboards.keyboards import gender_keyboard, start_keyboard
 from states.states import RegisterState
 
 

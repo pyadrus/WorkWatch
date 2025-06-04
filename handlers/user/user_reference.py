@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from dispatcher import bot, router
-from keyboards import start_menu_keyboard
+from keyboards.keyboards import start_menu_keyboard
 
 
 @router.callback_query(F.data == "reference")

@@ -3,7 +3,15 @@ from aiogram.fsm.state import State, StatesGroup
 
 
 class RegisterState(StatesGroup):
+    """Регистрация пользователей"""
+
     name = State()  # имя пользователя
     surname = State()  # фамилия пользователя
     phone = State()  # номер телефона пользователя
     gender = State()  # пол пользователя
+
+
+class AdminState(StatesGroup):
+    """Управление админами"""
+
+    admin_id = State()  # айди админа

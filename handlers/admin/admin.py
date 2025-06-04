@@ -1,17 +1,67 @@
 # -*- coding: utf-8 -*-
 from datetime import date, datetime
-from aiogram.types import BufferedInputFile
+from io import BytesIO
+
+import aiogram.types
 from aiogram import F
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from loguru import logger
-from database import RecordDataWorkingStart, RegisterUserBot
-from dispatcher import bot, router
-from keyboards import admin_keyboard, start_menu_keyboard
-from aiogram.types import CallbackQuery
 from openpyxl import Workbook
-from io import BytesIO
-from datetime import datetime
+
+from database import (AdminBot, RecordDataWorkingStart, RegisterUserBot, db,
+                      recording_working_start)
+from dispatcher import bot, router
+from keyboards.admin import admin_keyboard
+from keyboards.keyboards import start_menu_keyboard
+from states.states import AdminState
+
+
+@router.callback_query(F.data == "grant_administrator_rights")
+async def grant_administrator_rights(callback_query: CallbackQuery, state: FSMContext):
+    """✅ Выдача администраторских прав"""
+    await state.clear()
+    message_text = "🔑 Выдача администраторских прав\n\nВведите id пользователя, которому хотите выдать права администратора:"
+    await bot.send_message(
+        chat_id=callback_query.from_user.id,
+        text=message_text,
+    )
+    await state.set_state(AdminState.admin_id)
+
+
+@router.message(AdminState.admin_id)
+async def handle_admin_id(message: Message, state: FSMContext):
+    """✅ Обработка id администратора"""
+    admin_id = message.text.strip()
+
+    db.create_tables([AdminBot])
+    # Проверяем, что это число
+    if not admin_id.isdigit():
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text="⚠️ ID должен быть числом. Попробуйте ещё раз.",
+        )
+        return
+
+    admin_id = int(admin_id)
+
+    # Сохраняем в базу данных
+    try:
+        AdminBot.create(id_admin=admin_id)
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text=f"✅ Пользователю с ID {admin_id} успешно выданы администраторские права.",
+            reply_markup=start_menu_keyboard(),
+        )
+    except Exception as e:
+        logger.exception(e)
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text="❌ Произошла ошибка при сохранении данных.",
+            reply_markup=start_menu_keyboard(),
+        )
+
+    await state.clear()
 
 
 @router.callback_query(F.data == "get_register_users")
@@ -157,3 +207,4 @@ def register_handler_who_at_work():
     router.callback_query.register(who_at_work, F.data == "who_at_work")
     router.callback_query.register(admin_panel, F.data == "admin_panel")
     router.callback_query.register(get_register_users, F.data == "get_register_users")
+    router.callback_query.register(grant_administrator_rights, F.data == "grant_administrator_rights")

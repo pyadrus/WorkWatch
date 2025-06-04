@@ -7,6 +7,21 @@ from peewee import *
 db = SqliteDatabase("base.db")
 
 
+class AdminBot(Model):
+    """
+    База данных администраторов Telegram бота
+
+    Attributes:
+       id_admin (int): Уникальный идентификатор администратора
+    """
+
+    id_admin = IntegerField(unique=True)  # id администратора делаем уникальным
+
+    class Meta:
+        database = db
+        table_name = "admins_bot"
+
+
 class Person(Model):
     """
     База данных сотрудников, которые запустили Telegram бота
