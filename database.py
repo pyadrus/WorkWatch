@@ -22,6 +22,20 @@ class AdminBot(Model):
         table_name = "admins_bot"
 
 
+def is_admin(user_id: int) -> bool:
+    """
+    Проверяет, является ли пользователь с заданным ID администратором.
+
+    :param user_id: ID пользователя для проверки.
+    :return: True, если пользователь — администратор, иначе False.
+    """
+    try:
+        return AdminBot.get_or_none(AdminBot.id_admin == user_id) is not None
+    except Exception as e:
+        logger.error(f"Ошибка при проверке администратора: {e}")
+        return False
+
+
 class Person(Model):
     """
     База данных сотрудников, которые запустили Telegram бота
@@ -51,8 +65,8 @@ def recording_data_users_who_launched_bot(message):
     try:
         db.create_tables([Person])
         Person.create(
-            name=message.from_user.first_name,
-            surname=message.from_user.last_name,
+            name=message.from_user.first_name or "",
+            surname=message.from_user.last_name or "",
             id_user=message.from_user.id,
         )
     except Exception as error:
@@ -101,9 +115,9 @@ def registration_user(callback, name, surname, phone, gender):
         user, created = RegisterUserBot.get_or_create(
             id_user=callback.from_user.id,
             defaults={
-                "name_telegram": callback.from_user.first_name,
-                "surname_telegram": callback.from_user.last_name,
-                "username": callback.from_user.username,
+                "name_telegram": callback.from_user.first_name or "",
+                "surname_telegram": callback.from_user.last_name or "",  # ✅ Не None
+                "username": callback.from_user.username or "",
                 "name": name,
                 "surname": surname,
                 "phone": phone,
@@ -113,9 +127,9 @@ def registration_user(callback, name, surname, phone, gender):
         )
         if not created:
             # Если пользователь уже существует — обновляем его данные
-            user.name_telegram = callback.from_user.first_name
-            user.surname_telegram = callback.from_user.last_name
-            user.username = callback.from_user.username
+            user.name_telegram = callback.from_user.first_name or ""
+            user.surname_telegram = callback.from_user.last_name or ""
+            user.username = callback.from_user.username or ""
             user.name = name
             user.surname = surname
             user.phone = phone

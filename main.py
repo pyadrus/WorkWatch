@@ -9,7 +9,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from loguru import logger
 
-from database import RegisterUserBot, db, recording_data_users_who_launched_bot
+from database import (
+    AdminBot,
+    RegisterUserBot,
+    db,
+    is_admin,
+    recording_data_users_who_launched_bot,
+)
 from dispatcher import bot, dp, router
 from handlers.admin.admin import register_handler_who_at_work
 from handlers.user.user_end import register_handlers_left
@@ -32,8 +38,12 @@ async def command_start_handler(message: Message) -> None:
     logger.info(f"Пользователь {id_user} отправил команду /start")
     # Записываем данные пользователя, который отправил команду /start
     recording_data_users_who_launched_bot(message)
-    db.create_tables([RegisterUserBot])
+    db.create_tables([RegisterUserBot, AdminBot])
     user = RegisterUserBot.select().where(RegisterUserBot.id_user == id_user).first()
+
+    # Проверяем, является ли пользователь администратором
+    admin = is_admin(id_user)
+
     text = (
         "👋 Добро пожаловать в бот для учета сотрудников на рабочем месте!\n\n"
         "Этот бот помогает фиксировать ваше присутствие на рабочем месте и уведомлять коллег.\n\n"
@@ -48,7 +58,7 @@ async def command_start_handler(message: Message) -> None:
         " Хорошего дня! 😊"
     )
     if user:
-        if message.from_user.id == 535185511:
+        if admin:
             await bot.send_message(
                 chat_id=message.chat.id,
                 text=text,
@@ -56,9 +66,10 @@ async def command_start_handler(message: Message) -> None:
             )
         else:
             print(user.name, user.surname)
-            # Записываем данные пользователя, который зарегистрировался в базе данных
             await bot.send_message(
-                chat_id=message.chat.id, text=text, reply_markup=start_keyboard()
+                chat_id=message.chat.id,
+                text=text,
+                reply_markup=start_keyboard(),
             )
     else:
         print("Пользователь не найден.")
@@ -82,6 +93,10 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
         callback_query.from_user.id
     )  # id пользователя, отправившего команду /start
     logger.info(f"Пользователь {id_user} отправил команду /start")
+    db.create_tables([RegisterUserBot, AdminBot])
+    user = RegisterUserBot.select().where(RegisterUserBot.id_user == id_user).first()
+    # Проверяем, является ли пользователь администратором
+    admin = is_admin(id_user)
     text = (
         "👋 Добро пожаловать в бот для учета сотрудников на рабочем месте!\n\n"
         "Этот бот помогает фиксировать ваше присутствие на рабочем месте и уведомлять коллег.\n\n"
@@ -95,17 +110,27 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
         "⚠️ Важно: Доступ к боту только для сотрудников компании.\n\n"
         " Хорошего дня! 😊"
     )
-    if callback_query.from_user.id == 535185511:
-        await bot.send_message(
-            chat_id=callback_query.from_user.id,
-            text=text,
-            reply_markup=register_admin_keyboard(),
-        )
+    if user:
+        if admin:
+            await bot.send_message(
+                chat_id=callback_query.from_user.id,
+                text=text,
+                reply_markup=register_admin_keyboard(),
+            )
+        else:
+            print(user.name, user.surname)
+            await bot.send_message(
+                chat_id=callback_query.from_user.id,
+                text=text,
+                reply_markup=start_keyboard(),
+            )
     else:
+        print("Пользователь не найден.")
+        text_register = "Для использования бота, пройдите регистрацию"
         await bot.send_message(
             chat_id=callback_query.from_user.id,
-            text=text,
-            reply_markup=start_keyboard(),
+            text=text_register,
+            reply_markup=register_user_keyboard(),
         )
 
 

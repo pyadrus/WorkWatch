@@ -2,15 +2,13 @@
 from datetime import date, datetime
 from io import BytesIO
 
-import aiogram.types
 from aiogram import F
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import BufferedInputFile, CallbackQuery, Message
 from loguru import logger
 from openpyxl import Workbook
 
-from database import (AdminBot, RecordDataWorkingStart, RegisterUserBot, db,
-                      recording_working_start)
+from database import AdminBot, RecordDataWorkingStart, RegisterUserBot, db
 from dispatcher import bot, router
 from keyboards.admin import admin_keyboard
 from keyboards.keyboards import start_menu_keyboard
@@ -207,4 +205,6 @@ def register_handler_who_at_work():
     router.callback_query.register(who_at_work, F.data == "who_at_work")
     router.callback_query.register(admin_panel, F.data == "admin_panel")
     router.callback_query.register(get_register_users, F.data == "get_register_users")
-    router.callback_query.register(grant_administrator_rights, F.data == "grant_administrator_rights")
+    router.callback_query.register(
+        grant_administrator_rights, F.data == "grant_administrator_rights"
+    )
