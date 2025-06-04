@@ -6,8 +6,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path='.env')
-TOKEN = os.getenv('BOT_TOKEN')  # Токен бота
+load_dotenv(dotenv_path=".env")
+TOKEN = os.getenv("BOT_TOKEN")  # Токен бота
 
 dp = Dispatcher()
 

@@ -28,14 +28,34 @@ async def get_register_users(callback_query: CallbackQuery, state: FSMContext):
     ws = wb.active
     ws.title = "Пользователи"
     # Добавляем заголовки
-    ws.append(["ID пользователя", "Имя Telegram", "Фамилия Telegram", "Username",
-              "Имя сотрудника", "Фамилия сотрудника", "Телефон", "Пол", "Дата регистрации"])
+    ws.append(
+        [
+            "ID пользователя",
+            "Имя Telegram",
+            "Фамилия Telegram",
+            "Username",
+            "Имя сотрудника",
+            "Фамилия сотрудника",
+            "Телефон",
+            "Пол",
+            "Дата регистрации",
+        ]
+    )
     # Добавляем данные
     for user in users:
-        ws.append([
-            user['id_user'], user['name_telegram'], user['surname_telegram'], user['username'], 
-            user['name'], user['surname'], user['phone'], user['gender'], user['registration_date'],
-                   ])
+        ws.append(
+            [
+                user["id_user"],
+                user["name_telegram"],
+                user["surname_telegram"],
+                user["username"],
+                user["name"],
+                user["surname"],
+                user["phone"],
+                user["gender"],
+                user["registration_date"],
+            ]
+        )
     # Сохраняем в буфер
     file_stream = BytesIO()
     wb.save(file_stream)
@@ -48,7 +68,7 @@ async def get_register_users(callback_query: CallbackQuery, state: FSMContext):
         chat_id=callback_query.from_user.id,
         document=document,
         caption="📊 Список зарегистрированных пользователей",
-        reply_markup=start_menu_keyboard()
+        reply_markup=start_menu_keyboard(),
     )
 
 
@@ -56,10 +76,16 @@ async def get_register_users(callback_query: CallbackQuery, state: FSMContext):
 async def admin_panel(callback_query: CallbackQuery, state: FSMContext):
     """✅ Панель администратора"""
     await state.clear()
-    message_text = ('✅ Панель администратора\n\n'
-                    '📊 Список зарегистрированных пользователей\n'
-                    '🏠 Список сотрудников на работе')
-    await bot.send_message(chat_id=callback_query.from_user.id, text=message_text,  reply_markup=admin_keyboard())
+    message_text = (
+        "✅ Панель администратора\n\n"
+        "📊 Список зарегистрированных пользователей\n"
+        "🏠 Список сотрудников на работе"
+    )
+    await bot.send_message(
+        chat_id=callback_query.from_user.id,
+        text=message_text,
+        reply_markup=admin_keyboard(),
+    )
 
 
 @router.callback_query(F.data == "who_at_work")
@@ -70,13 +96,18 @@ async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
 
     # Получаем все записи за текущий день
     start_of_day = datetime.combine(
-        current_date, datetime.min.time())  # Начало дня: 00:00
+        current_date, datetime.min.time()
+    )  # Начало дня: 00:00
     # Конец дня: 23:59:59.999999
     end_of_day = datetime.combine(current_date, datetime.max.time())
-    all_records = RecordDataWorkingStart.select().where(
-        (RecordDataWorkingStart.time_start >= start_of_day) &
-        (RecordDataWorkingStart.time_start <= end_of_day)
-    ).order_by(RecordDataWorkingStart.time_start.asc())
+    all_records = (
+        RecordDataWorkingStart.select()
+        .where(
+            (RecordDataWorkingStart.time_start >= start_of_day)
+            & (RecordDataWorkingStart.time_start <= end_of_day)
+        )
+        .order_by(RecordDataWorkingStart.time_start.asc())
+    )
 
     # Если записей нет, отправляем сообщение
     if not all_records.exists():
@@ -85,7 +116,7 @@ async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
         await bot.send_message(
             chat_id=callback_query.from_user.id,
             text=message_text,
-            reply_markup=start_menu_keyboard()
+            reply_markup=start_menu_keyboard(),
         )
         return
 
@@ -97,15 +128,16 @@ async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
 
     # Фильтруем сотрудников, которые "на работе"
     users_at_work = [
-        record for record in latest_records.values()
-        if record.event_user == "на работе"
+        record for record in latest_records.values() if record.event_user == "на работе"
     ]
 
     # Формируем текст сообщения
     if users_at_work:
         user_list = "\n".join(
-            [f"👤 {user.name} {user.surname} - {user.store_address} (время: {user.time_start.strftime('%H:%M')})"
-                for user in users_at_work]
+            [
+                f"👤 {user.name} {user.surname} - {user.store_address} (время: {user.time_start.strftime('%H:%M')})"
+                for user in users_at_work
+            ]
         )
         message_text = f"📋 Список сотрудников на работе:\n{user_list}"
     else:
@@ -116,7 +148,7 @@ async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text=message_text,
-        reply_markup=start_menu_keyboard()
+        reply_markup=start_menu_keyboard(),
     )
 
 

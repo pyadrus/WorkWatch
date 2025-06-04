@@ -4,7 +4,7 @@ from datetime import datetime
 from loguru import logger
 from peewee import *
 
-db = SqliteDatabase('base.db')
+db = SqliteDatabase("base.db")
 
 
 class Person(Model):
@@ -16,13 +16,14 @@ class Person(Model):
        surname (str): Фамилия сотрудника
        id_user (int): Уникальный идентификатор пользователя
     """
+
     name = CharField()  # имя сотрудника
     surname = CharField()  # фамилия сотрудника
     id_user = IntegerField()  # id пользователя
 
     class Meta:
         database = db
-        table_name = 'registered_users_start'
+        table_name = "registered_users_start"
 
 
 def recording_data_users_who_launched_bot(message):
@@ -34,9 +35,11 @@ def recording_data_users_who_launched_bot(message):
     """
     try:
         db.create_tables([Person])
-        Person.create(name=message.from_user.first_name,
-                      surname=message.from_user.last_name,
-                      id_user=message.from_user.id)
+        Person.create(
+            name=message.from_user.first_name,
+            surname=message.from_user.last_name,
+            id_user=message.from_user.id,
+        )
     except Exception as error:
         logger.exception(error)
 
@@ -50,6 +53,7 @@ class RegisterUserBot(Model):
        surname (str): Фамилия сотрудника
        id_user (int): Уникальный идентификатор пользователя
     """
+
     id_user = IntegerField()  # id пользователя
     name_telegram = CharField()  # имя аккаунта телеграмм
     surname_telegram = CharField()  # фамилия аккаунта Telegram
@@ -62,7 +66,7 @@ class RegisterUserBot(Model):
 
     class Meta:
         database = db
-        table_name = 'registered_users'
+        table_name = "registered_users"
 
 
 def registration_user(callback, name, surname, phone, gender):
@@ -82,15 +86,15 @@ def registration_user(callback, name, surname, phone, gender):
         user, created = RegisterUserBot.get_or_create(
             id_user=callback.from_user.id,
             defaults={
-                'name_telegram': callback.from_user.first_name,
-                'surname_telegram': callback.from_user.last_name,
-                'username': callback.from_user.username,
-                'name': name,
-                'surname': surname,
-                'phone': phone,
-                'gender': gender,
-                'registration_date': datetime.now()
-            }
+                "name_telegram": callback.from_user.first_name,
+                "surname_telegram": callback.from_user.last_name,
+                "username": callback.from_user.username,
+                "name": name,
+                "surname": surname,
+                "phone": phone,
+                "gender": gender,
+                "registration_date": datetime.now(),
+            },
         )
         if not created:
             # Если пользователь уже существует — обновляем его данные
@@ -115,6 +119,7 @@ class RecordDataWorkingStart(Model):
        id_user (int): Уникальный идентификатор пользователя
        time_start (str): Время начала работы
     """
+
     id_user = IntegerField()  # id пользователя
     name = CharField()  # имя сотрудника
     surname = CharField()  # фамилия сотрудника
@@ -125,10 +130,12 @@ class RecordDataWorkingStart(Model):
 
     class Meta:
         database = db
-        table_name = 'working_user'
+        table_name = "working_user"
 
 
-def recording_working_start(callback_query, name, surname, event_user, store_address, phone):
+def recording_working_start(
+    callback_query, name, surname, event_user, store_address, phone
+):
     """
     Записывает в базу данных сотрудников, которые начали работать
 
@@ -137,13 +144,15 @@ def recording_working_start(callback_query, name, surname, event_user, store_add
     """
     try:
         db.create_tables([RecordDataWorkingStart])
-        RecordDataWorkingStart.create(id_user=callback_query.from_user.id,
-                                      name=name,
-                                      surname=surname,
-                                      event_user=event_user,
-                                      store_address=store_address,
-                                      phone=phone,
-                                      time_start=datetime.now())
+        RecordDataWorkingStart.create(
+            id_user=callback_query.from_user.id,
+            name=name,
+            surname=surname,
+            event_user=event_user,
+            store_address=store_address,
+            phone=phone,
+            time_start=datetime.now(),
+        )
     except Exception as error:
         logger.exception(error)
 
