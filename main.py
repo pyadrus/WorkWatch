@@ -4,6 +4,7 @@ import logging
 import sys
 
 from aiogram import F
+from aiogram.enums import ChatMemberStatus
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
@@ -26,6 +27,8 @@ from handlers.user.user_start import register_handlers_at_work
 from keyboards.admin import register_admin_keyboard
 from keyboards.keyboards import register_user_keyboard, start_keyboard
 
+GROUP_CHAT_ID = -1002678330553  # ID группы
+
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
@@ -37,6 +40,29 @@ async def command_start_handler(message: Message) -> None:
     """
     id_user = message.from_user.id  # id пользователя, отправившего команду /start
     logger.info(f"Пользователь {id_user} отправил команду /start")
+
+    # Проверяем, подписан ли пользователь на группу
+    try:
+        chat_member = await bot.get_chat_member(chat_id=GROUP_CHAT_ID, user_id=id_user)
+        if chat_member.status not in [
+            ChatMemberStatus.MEMBER,
+            ChatMemberStatus.ADMINISTRATOR,
+            ChatMemberStatus.CREATOR,
+        ]:
+            logger.warning(f"Пользователь {id_user} не подписан на группу")
+            await bot.send_message(
+                chat_id=id_user,
+                text="❌ Вы не являетесь сотрудником компании, поэтому не можете использовать бота.\n\n",
+            )
+            return
+    except Exception as e:
+        logger.error(f"Ошибка при проверке подписки пользователя {id_user}: {e}")
+        await bot.send_message(
+            chat_id=id_user,
+            text="❌ Не удалось проверить подписку. Попробуйте позже.",
+        )
+        return
+
     # Записываем данные пользователя, который отправил команду /start
     recording_data_users_who_launched_bot(message)
     db.create_tables([RegisterUserBot, AdminBot, AdminBlockUser])
@@ -106,6 +132,29 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
         callback_query.from_user.id
     )  # id пользователя, отправившего команду /start
     logger.info(f"Пользователь {id_user} отправил команду /start")
+
+    # Проверяем, подписан ли пользователь на группу
+    try:
+        chat_member = await bot.get_chat_member(chat_id=GROUP_CHAT_ID, user_id=id_user)
+        if chat_member.status not in [
+            ChatMemberStatus.MEMBER,
+            ChatMemberStatus.ADMINISTRATOR,
+            ChatMemberStatus.CREATOR,
+        ]:
+            logger.warning(f"Пользователь {id_user} не подписан на группу")
+            await bot.send_message(
+                chat_id=id_user,
+                text="❌ Вы не являетесь сотрудником компании, поэтому не можете использовать бота.\n\n",
+            )
+            return
+    except Exception as e:
+        logger.error(f"Ошибка при проверке подписки пользователя {id_user}: {e}")
+        await bot.send_message(
+            chat_id=id_user,
+            text="❌ Не удалось проверить подписку. Попробуйте позже.",
+        )
+        return
+
     db.create_tables([RegisterUserBot, AdminBot])
 
     # Проверяем, заблокирован ли пользователь
