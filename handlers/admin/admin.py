@@ -21,6 +21,33 @@ from keyboards.keyboards import start_menu_keyboard
 from states.states import AdminState
 
 
+@router.callback_query(F.data == "revoke_administrator_rights")
+async def revoke_administrator_rights(callback_query: CallbackQuery, state: FSMContext):
+    await state.clear()
+    message_text = (
+        "Введите id пользователя, которому хотите отозвать права администратора"
+    )
+    await bot.send_message(
+        chat_id=callback_query.from_user.id,
+        text=message_text,
+    )
+    await state.set_state(AdminState.revoke_admin_rights)
+
+
+@router.message(AdminState.revoke_admin_rights)
+async def revoke_admin_rights(message: Message, state: FSMContext):
+    if message.text.isdigit():
+        user_id = int(message.text)
+        try:
+            AdminBot.delete().where(AdminBot.id_admin == user_id).execute()
+            await bot.send_message(
+                chat_id=message.from_user.id,
+                text="Права администратора успешно отозваны",
+            )
+        except Exception as e:
+            logger.error(e)
+
+
 @router.callback_query(F.data == "unblock")
 async def unblock(callback_query: CallbackQuery, state: FSMContext):
     await state.clear()
@@ -287,3 +314,7 @@ def register_handler_who_at_work():
         grant_administrator_rights, F.data == "grant_administrator_rights"
     )
     router.callback_query.register(block, F.data == "block")
+    router.callback_query.register(unblock, F.data == "unblock")
+    router.callback_query.register(
+        revoke_administrator_rights, F.data == "revoke_administrator_rights"
+    )

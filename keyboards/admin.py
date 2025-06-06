@@ -35,6 +35,12 @@ def admin_keyboard():
                     callback_data="grant_administrator_rights",
                 )
             ],
+            [
+                InlineKeyboardButton(
+                    text="Забрать права администратора",
+                    callback_data="revoke_administrator_rights",
+                )
+            ],
             [InlineKeyboardButton(text="⬅ Назад", callback_data="back")],
         ]
     )
