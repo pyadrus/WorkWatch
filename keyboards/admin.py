@@ -19,6 +19,12 @@ def admin_keyboard():
             ],
             [
                 InlineKeyboardButton(
+                    text="Заблокировать пользователя",
+                    callback_data="block",
+                )
+            ],
+            [
+                InlineKeyboardButton(
                     text="Дать права администратора",
                     callback_data="grant_administrator_rights",
                 )

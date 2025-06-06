@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from loguru import logger
 
-from database import RegisterUserBot, db, recording_working_start
+from database import RegisterUserBot, db, recording_working_start, AdminBlockUser
 from dispatcher import bot, router
 from keyboards.keyboards import shops_keyboard_end, start_menu_keyboard
 
@@ -14,6 +14,17 @@ from keyboards.keyboards import shops_keyboard_end, start_menu_keyboard
 @router.callback_query(F.data == "left")
 async def left(callback_query: CallbackQuery, state: FSMContext):
     """✅ Регистрация пользователей и запись данных в базу данных"""
+    id_user = callback_query.from_user.id  # id пользователя
+    # Проверяем, заблокирован ли пользователь
+    block = AdminBlockUser.select().where(AdminBlockUser.block_id == id_user).first()
+    if block:
+        logger.warning(f"Заблокированный пользователь {id_user} попытался войти")
+        await bot.send_message(
+            chat_id=callback_query.from_user.id,
+            text="❌ Вам запрещён доступ к этому боту.",
+        )
+        return  # Прерываем выполнение функции
+
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Выберите из списка адрес магазина",

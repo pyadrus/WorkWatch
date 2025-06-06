@@ -12,6 +12,7 @@ class RegisterState(StatesGroup):
 
 
 class AdminState(StatesGroup):
-    """Управление админами"""
+    """Управление админа"""
 
     admin_id = State()  # айди админа
+    block_id = State()  # айди пользователя, которого надо заблокировать

@@ -7,6 +7,37 @@ from peewee import *
 db = SqliteDatabase("base.db")
 
 
+class AdminBlockUser(Model):
+    """
+    База данных пользователей, которые заблокированы администратором
+
+    Attributes:
+       block_id (int): Уникальный идентификатор администратора
+    """
+
+    block_id = IntegerField(unique=True)  # id администратора делаем уникальным
+
+    class Meta:
+        database = db
+        table_name = "block_users"
+
+
+# def is_block(user_id: int) -> bool:
+#     """
+#     Проверяет, является ли пользователь с заданным ID администратором.
+#
+#     :param user_id: ID пользователя для проверки.
+#     :return: True, если пользователь — администратор, иначе False.
+#     """
+#     try:
+#         return (
+#             AdminBlockUser.get_or_none(AdminBlockUser.block_id == user_id) is not None
+#         )
+#     except Exception as e:
+#         logger.error(f"Ошибка при проверке администратора: {e}")
+#         return False
+
+
 class AdminBot(Model):
     """
     База данных администраторов Telegram бота
@@ -169,7 +200,12 @@ def recording_working_start(
     Записывает в базу данных сотрудников, которые начали работать
 
     Args:
-        message: Объект сообщения, содержащий информацию о пользователе, который начал работать
+        callback_query (telegram.types.CallbackQuery): Объект колбэка, содержащий информацию о пользователе.
+        surname (str): Фамилия сотрудника.
+        event_user (str): Событие пользователя.
+        store_address (str): Адрес магазина.
+        phone (str): Телефон сотрудника.
+        name (str): Имя сотрудника.
     """
     try:
         db.create_tables([RecordDataWorkingStart])

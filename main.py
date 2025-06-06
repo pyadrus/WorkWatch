@@ -15,6 +15,7 @@ from database import (
     db,
     is_admin,
     recording_data_users_who_launched_bot,
+    AdminBlockUser,
 )
 from dispatcher import bot, dp, router
 from handlers.admin.admin import register_handler_who_at_work
@@ -38,7 +39,18 @@ async def command_start_handler(message: Message) -> None:
     logger.info(f"Пользователь {id_user} отправил команду /start")
     # Записываем данные пользователя, который отправил команду /start
     recording_data_users_who_launched_bot(message)
-    db.create_tables([RegisterUserBot, AdminBot])
+    db.create_tables([RegisterUserBot, AdminBot, AdminBlockUser])
+
+    # Проверяем, заблокирован ли пользователь
+    block = AdminBlockUser.select().where(AdminBlockUser.block_id == id_user).first()
+    if block:
+        logger.warning(f"Заблокированный пользователь {id_user} попытался войти")
+        await bot.send_message(
+            chat_id=message.chat.id,
+            text="❌ Вам запрещён доступ к этому боту.",
+        )
+        return  # Прерываем выполнение функции
+
     user = RegisterUserBot.select().where(RegisterUserBot.id_user == id_user).first()
 
     # Проверяем, является ли пользователь администратором
@@ -57,6 +69,7 @@ async def command_start_handler(message: Message) -> None:
         "⚠️ Важно: Доступ к боту только для сотрудников компании.\n\n"
         " Хорошего дня! 😊"
     )
+
     if user:
         if admin:
             await bot.send_message(
@@ -94,6 +107,17 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
     )  # id пользователя, отправившего команду /start
     logger.info(f"Пользователь {id_user} отправил команду /start")
     db.create_tables([RegisterUserBot, AdminBot])
+
+    # Проверяем, заблокирован ли пользователь
+    block = AdminBlockUser.select().where(AdminBlockUser.block_id == id_user).first()
+    if block:
+        logger.warning(f"Заблокированный пользователь {id_user} попытался войти")
+        await bot.send_message(
+            chat_id=callback_query.from_user.id,
+            text="❌ Вам запрещён доступ к этому боту.",
+        )
+        return  # Прерываем выполнение функции
+
     user = RegisterUserBot.select().where(RegisterUserBot.id_user == id_user).first()
     # Проверяем, является ли пользователь администратором
     admin = is_admin(id_user)

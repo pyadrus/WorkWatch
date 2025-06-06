@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from loguru import logger
 
-from database import registration_user
+from database import registration_user, AdminBlockUser
 from dispatcher import bot, router
 from keyboards.keyboards import gender_keyboard, start_keyboard
 from states.states import RegisterState
@@ -13,6 +13,18 @@ from states.states import RegisterState
 @router.callback_query(F.data == "registration")
 async def registration_user_handler(callback_query: CallbackQuery, state: FSMContext):
     """Начало регистрации — запрашиваем имя"""
+
+    id_user = callback_query.from_user.id  # id пользователя
+    # Проверяем, заблокирован ли пользователь
+    block = AdminBlockUser.select().where(AdminBlockUser.block_id == id_user).first()
+    if block:
+        logger.warning(f"Заблокированный пользователь {id_user} попытался войти")
+        await bot.send_message(
+            chat_id=callback_query.from_user.id,
+            text="❌ Вам запрещён доступ к этому боту.",
+        )
+        return  # Прерываем выполнение функции
+
     text = "Для регистрации введите свое имя"
     await bot.send_message(chat_id=callback_query.from_user.id, text=text)
     await state.set_state(RegisterState.name)

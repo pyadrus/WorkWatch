@@ -1,4 +1,7 @@
-aiogram
-dotenv
-loguru
-peewee
+aiogram~=3.20.0.post0
+dotenv~=0.9.9
+loguru~=0.7.3
+peewee~=3.18.1
+logging~=0.4.9.6
+openpyxl~=3.2.0b1
+python-dotenv~=1.1.0

@@ -8,11 +8,64 @@ from aiogram.types import BufferedInputFile, CallbackQuery, Message
 from loguru import logger
 from openpyxl import Workbook
 
-from database import AdminBot, RecordDataWorkingStart, RegisterUserBot, db
+from database import (
+    AdminBot,
+    RecordDataWorkingStart,
+    RegisterUserBot,
+    db,
+    AdminBlockUser,
+)
 from dispatcher import bot, router
 from keyboards.admin import admin_keyboard
 from keyboards.keyboards import start_menu_keyboard
 from states.states import AdminState
+
+
+@router.callback_query(F.data == "block")
+async def block(callback_query: CallbackQuery, state: FSMContext):
+    """✅ Блокировка пользователя"""
+    await state.clear()
+    message_text = "Введите id пользователя, которого хотите заблокировать"
+    await bot.send_message(
+        chat_id=callback_query.from_user.id,
+        text=message_text,
+    )
+    await state.set_state(AdminState.block_id)
+
+
+@router.message(AdminState.block_id)
+async def handle_block_id(message: Message, state: FSMContext):
+    """✅ Обработка id заблокированного пользователя"""
+    block_id = message.text.strip()
+
+    db.create_tables([AdminBlockUser])
+    # Проверяем, что это число
+    if not block_id.isdigit():
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text="⚠️ ID должен быть числом. Попробуйте ещё раз.",
+        )
+        return
+
+    block_id = int(block_id)
+
+    # Сохраняем в базу данных
+    try:
+        AdminBlockUser.create(block_id=block_id)
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text=f"✅ Пользователь с ID {block_id} успешно заблокирован.",
+            reply_markup=start_menu_keyboard(),
+        )
+    except Exception as e:
+        logger.exception(e)
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text="❌ Произошла ошибка при сохранении данных.",
+            reply_markup=start_menu_keyboard(),
+        )
+
+    await state.clear()
 
 
 @router.callback_query(F.data == "grant_administrator_rights")
@@ -208,3 +261,4 @@ def register_handler_who_at_work():
     router.callback_query.register(
         grant_administrator_rights, F.data == "grant_administrator_rights"
     )
+    router.callback_query.register(block, F.data == "block")
