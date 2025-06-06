@@ -22,22 +22,6 @@ class AdminBlockUser(Model):
         table_name = "block_users"
 
 
-# def is_block(user_id: int) -> bool:
-#     """
-#     Проверяет, является ли пользователь с заданным ID администратором.
-#
-#     :param user_id: ID пользователя для проверки.
-#     :return: True, если пользователь — администратор, иначе False.
-#     """
-#     try:
-#         return (
-#             AdminBlockUser.get_or_none(AdminBlockUser.block_id == user_id) is not None
-#         )
-#     except Exception as e:
-#         logger.error(f"Ошибка при проверке администратора: {e}")
-#         return False
-
-
 class AdminBot(Model):
     """
     База данных администраторов Telegram бота

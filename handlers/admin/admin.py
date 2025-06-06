@@ -21,6 +21,31 @@ from keyboards.keyboards import start_menu_keyboard
 from states.states import AdminState
 
 
+@router.callback_query(F.data == "unblock")
+async def unblock(callback_query: CallbackQuery, state: FSMContext):
+    await state.clear()
+    message_text = "Введите id пользователя, которого хотите разблокировать"
+    await bot.send_message(
+        chat_id=callback_query.from_user.id,
+        text=message_text,
+    )
+    await state.set_state(AdminState.unblock_id)
+
+
+@router.message(AdminState.unblock_id)
+async def unblock(message: Message, state: FSMContext):
+    if message.text.isdigit():
+        user_id = int(message.text)
+        try:
+            AdminBlockUser.delete().where(AdminBlockUser.block_id == user_id).execute()
+            await bot.send_message(
+                chat_id=message.from_user.id,
+                text="Пользователь успешно разблокирован",
+            )
+        except Exception as e:
+            logger.exception(e)
+
+
 @router.callback_query(F.data == "block")
 async def block(callback_query: CallbackQuery, state: FSMContext):
     """✅ Блокировка пользователя"""

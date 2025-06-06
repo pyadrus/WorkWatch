@@ -16,3 +16,4 @@ class AdminState(StatesGroup):
 
     admin_id = State()  # айди админа
     block_id = State()  # айди пользователя, которого надо заблокировать
+    unblock_id = State()  # айди пользователя, которого надо разблокировать
