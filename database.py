@@ -167,6 +167,7 @@ class RecordDataWorkingStart(Model):
     id_user = IntegerField()  # id пользователя
     name = CharField()  # имя сотрудника
     surname = CharField()  # фамилия сотрудника
+    username = CharField()  # username аккаунта Telegram
     event_user = CharField()  # событие пользователя
     store_address = CharField()  # адрес магазина
     phone = CharField()  # телефон сотрудника
@@ -197,6 +198,7 @@ def recording_working_start(
             id_user=callback_query.from_user.id,
             name=name,
             surname=surname,
+            username=callback_query.from_user.username or "",
             event_user=event_user,
             store_address=store_address,
             phone=phone,

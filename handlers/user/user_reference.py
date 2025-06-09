@@ -13,11 +13,10 @@ from messages.messages import messages_start
 
 @router.callback_query(F.data == "reference")
 async def reference(callback_query: CallbackQuery, state: FSMContext):
-    """✅ Справка"""
+    """❓ «Справка»"""
     id_user = callback_query.from_user.id  # id пользователя
     # Проверяем, заблокирован ли пользователь
-    block = AdminBlockUser.select().where(AdminBlockUser.block_id == id_user).first()
-    if block:
+    if AdminBlockUser.select().where(AdminBlockUser.block_id == id_user).first():
         logger.warning(f"Заблокированный пользователь {id_user} попытался войти")
         await bot.send_message(
             chat_id=callback_query.from_user.id,
@@ -33,5 +32,5 @@ async def reference(callback_query: CallbackQuery, state: FSMContext):
 
 
 def register_handler_reference():
-    """Регистрация справки"""
+    """Регистрация ❓ «Справка»"""
     router.callback_query.register(reference, F.data == "reference")

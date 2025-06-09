@@ -63,7 +63,8 @@ async def send_user_registration_message(callback_query, store_address):
             f"👤 {user_link} {event_user}\n"
             f"📍 Адрес: {store_address}\n"
             f"📞 Телефон: {user.phone}\n"
-            f"🕒 Время: {datetime.now().strftime("%H:%M")}"
+            f"🕒 Время: {datetime.now().strftime("%H:%M")}\n"
+            f"✅ Чек лист выполнен"
         ),  # Текст сообщения
         parse_mode="HTML",  # Режим разметки текста
         disable_web_page_preview=True,  # Предварительный просмотр страницы

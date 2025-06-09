@@ -280,11 +280,16 @@ async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
     if users_at_work:
         user_list = "\n".join(
             [
-                f"👤 {user.name} {user.surname} - {user.store_address} (время: {user.time_start.strftime('%H:%M')})"
+                (
+                    f"👤 <a href='https://t.me/{user.username}'>{user.name} {user.surname}</a>\n"
+                    f"📍 Адрес: {user.store_address}\n"
+                    f"📞 Телефон: {user.phone}\n"
+                    f"🕒 Время: {user.time_start.strftime('%H:%M')})\n"
+                )
                 for user in users_at_work
             ]
         )
-        message_text = f"📋 Список сотрудников на работе:\n{user_list}"
+        message_text = f"📋 Список сотрудников на работе:\n\n{user_list}"
     else:
         message_text = "📭 На данный момент никто не на работе."
 
@@ -293,6 +298,8 @@ async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text=message_text,
+        parse_mode="HTML",  # Режим разметки текста
+        disable_web_page_preview=True,  # Предварительный просмотр страницы
         reply_markup=start_menu_keyboard(),
     )
 
