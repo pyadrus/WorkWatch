@@ -43,15 +43,15 @@ def start_keyboard():
                     text="👥 Кто на работе", callback_data="who_at_work"
                 )
             ],
-            [InlineKeyboardButton(text="Справка", callback_data="reference")],
+            [InlineKeyboardButton(text="❓Справка", callback_data="reference")],
             [
                 InlineKeyboardButton(
-                    text="Перерегистрация", callback_data="registration"
+                    text="✏️ Перерегистрация", callback_data="registration"
                 ),
             ],
             [
                 InlineKeyboardButton(text="✅ На работе", callback_data="at_work"),
-                InlineKeyboardButton(text="🏠 Ушёл", callback_data="left"),
+                InlineKeyboardButton(text="🏃 Ушёл", callback_data="left"),
             ],
         ]
     )

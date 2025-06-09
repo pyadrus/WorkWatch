@@ -24,12 +24,9 @@ from states.states import AdminState
 @router.callback_query(F.data == "revoke_administrator_rights")
 async def revoke_administrator_rights(callback_query: CallbackQuery, state: FSMContext):
     await state.clear()
-    message_text = (
-        "Введите id пользователя, которому хотите отозвать права администратора"
-    )
     await bot.send_message(
         chat_id=callback_query.from_user.id,
-        text=message_text,
+        text="Введите id пользователя, которому хотите отозвать права администратора",
     )
     await state.set_state(AdminState.revoke_admin_rights)
 
@@ -51,10 +48,9 @@ async def revoke_admin_rights(message: Message, state: FSMContext):
 @router.callback_query(F.data == "unblock")
 async def unblock(callback_query: CallbackQuery, state: FSMContext):
     await state.clear()
-    message_text = "Введите id пользователя, которого хотите разблокировать"
     await bot.send_message(
         chat_id=callback_query.from_user.id,
-        text=message_text,
+        text="Введите id пользователя, которого хотите разблокировать",
     )
     await state.set_state(AdminState.unblock_id)
 
@@ -77,10 +73,9 @@ async def unblock(message: Message, state: FSMContext):
 async def block(callback_query: CallbackQuery, state: FSMContext):
     """✅ Блокировка пользователя"""
     await state.clear()
-    message_text = "Введите id пользователя, которого хотите заблокировать"
     await bot.send_message(
         chat_id=callback_query.from_user.id,
-        text=message_text,
+        text="Введите id пользователя, которого хотите заблокировать",
     )
     await state.set_state(AdminState.block_id)
 
@@ -124,10 +119,9 @@ async def handle_block_id(message: Message, state: FSMContext):
 async def grant_administrator_rights(callback_query: CallbackQuery, state: FSMContext):
     """✅ Выдача администраторских прав"""
     await state.clear()
-    message_text = "🔑 Выдача администраторских прав\n\nВведите id пользователя, которому хотите выдать права администратора:"
     await bot.send_message(
         chat_id=callback_query.from_user.id,
-        text=message_text,
+        text="🔑 Выдача администраторских прав\n\nВведите id пользователя, которому хотите выдать права администратора:",
     )
     await state.set_state(AdminState.admin_id)
 
@@ -229,14 +223,13 @@ async def get_register_users(callback_query: CallbackQuery, state: FSMContext):
 async def admin_panel(callback_query: CallbackQuery, state: FSMContext):
     """✅ Панель администратора"""
     await state.clear()
-    message_text = (
-        "✅ Панель администратора\n\n"
-        "📊 Список зарегистрированных пользователей\n"
-        "🏠 Список сотрудников на работе"
-    )
     await bot.send_message(
         chat_id=callback_query.from_user.id,
-        text=message_text,
+        text=(
+            "✅ Панель администратора\n\n"
+            "📊 Список зарегистрированных пользователей\n"
+            "🏠 Список сотрудников на работе"
+        ),
         reply_markup=admin_keyboard(),
     )
 
@@ -264,11 +257,10 @@ async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
 
     # Если записей нет, отправляем сообщение
     if not all_records.exists():
-        message_text = "📭 На данный момент никто не на работе."
-        logger.info(message_text)
+        logger.info("📭 На данный момент никто не на работе.")
         await bot.send_message(
             chat_id=callback_query.from_user.id,
-            text=message_text,
+            text="📭 На данный момент никто не на работе.",
             reply_markup=start_menu_keyboard(),
         )
         return

@@ -57,15 +57,14 @@ async def send_user_registration_message_end(callback_query, store_address) -> N
 
     now = datetime.now().strftime("%H:%M")
     user_link = f"<a href='https://t.me/{user.username}'>{user.name} {user.surname}</a>"
-    text = (
-        f"👤 {user_link} {event_user}\n"
-        f"📍 Адрес: {store_address}\n"
-        f"📞 Телефон: {user.phone}\n"
-        f"🕒 Время: {now}"
-    )
     await bot.send_message(
         chat_id=-1002678330553,  # ID чата, куда отправляется сообщение
-        text=text,  # Текст сообщения
+        text=(
+            f"👤 {user_link} {event_user}\n"
+            f"📍 Адрес: {store_address}\n"
+            f"📞 Телефон: {user.phone}\n"
+            f"🕒 Время: {now}"
+        ),  # Текст сообщения
         parse_mode="HTML",  # Режим разметки текста
         disable_web_page_preview=True,  # Предварительный просмотр страницы
     )
