@@ -273,7 +273,9 @@ async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
 
     # Фильтруем сотрудников, которые "на работе"
     users_at_work = [
-        record for record in latest_records.values() if record.event_user == "на работе"
+        record
+        for record in latest_records.values()
+        if record.event_user_start == "на работе"
     ]
 
     # Формируем текст сообщения

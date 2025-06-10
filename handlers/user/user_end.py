@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from loguru import logger
 
-from database import RegisterUserBot, db, recording_working_start, AdminBlockUser
+from database import RegisterUserBot, db, recording_working_start_or_end, AdminBlockUser
 from dispatcher import bot, router
 from keyboards.keyboards import shops_keyboard_end, start_menu_keyboard
 
@@ -32,7 +32,7 @@ async def left(callback_query: CallbackQuery, state: FSMContext):
     )
 
 
-async def send_user_registration_message_end(callback_query, store_address) -> None:
+async def send_user_registration_message_end(callback_query, store_address):
     """
     Обработка и отправка сообщения в группу
 
@@ -51,16 +51,16 @@ async def send_user_registration_message_end(callback_query, store_address) -> N
     )
 
     if user.gender == "мужской":
-        event_user = "покинул работу"
+        event_user_end = "покинул работу"
     elif user.gender == "женский":
-        event_user = "покинула работу"
+        event_user_end = "покинула работу"
 
     now = datetime.now().strftime("%H:%M")
     user_link = f"<a href='https://t.me/{user.username}'>{user.name} {user.surname}</a>"
     await bot.send_message(
         chat_id=-1002678330553,  # ID чата, куда отправляется сообщение
         text=(
-            f"👤 {user_link} {event_user}\n"
+            f"👤 {user_link} {event_user_end}\n"
             f"📍 Адрес: {store_address}\n"
             f"📞 Телефон: {user.phone}\n"
             f"🕒 Время: {now}"
@@ -68,7 +68,7 @@ async def send_user_registration_message_end(callback_query, store_address) -> N
         parse_mode="HTML",  # Режим разметки текста
         disable_web_page_preview=True,  # Предварительный просмотр страницы
     )
-    return user.name, user.surname, "покинул работу", user.phone
+    return user.name, user.surname, event_user_end, user.phone
 
 
 @router.callback_query(F.data == "foundry_68_end")
@@ -80,11 +80,18 @@ async def foundry_68_end(callback_query: CallbackQuery, state: FSMContext):
             text="До свидания!",
             reply_markup=start_menu_keyboard(),
         )
-        name, surname, event_user, phone = await send_user_registration_message_end(
-            callback_query, "Литейная 68"
+        store_address = "Литейная 68"
+        name, surname, event_user_end, phone = await send_user_registration_message_end(
+            callback_query, store_address
         )
-        recording_working_start(
-            callback_query, name, surname, event_user, "Литейная 68", phone
+        recording_working_start_or_end(
+            callback_query,
+            name,
+            surname,
+            store_address,
+            phone,
+            event_user_end=event_user_end,
+            time_end=datetime.now(),
         )
     except Exception as e:
         logger.exception(e)
@@ -98,11 +105,18 @@ async def nikitin_5_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Никитина 5"
+    store_address = "Никитина 5"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Никитина 5", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -114,11 +128,18 @@ async def moscow_154b_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Московский 154Б"
+    store_address = "Московский 154Б"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Московский 154Б", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -130,11 +151,18 @@ async def moscow_34_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Московский 34"
+    store_address = "Московский 34"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Московский 34", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -146,11 +174,18 @@ async def aviation_5A_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Авиационная 5А"
+    store_address = "Авиационная 5А"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Авиационная 5А", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -162,11 +197,18 @@ async def aviation_13a_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Авиационная 13А"
+    store_address = "Авиационная 13А"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Авиационная 13А", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -178,11 +220,18 @@ async def telmana_68A_end_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Тельмана 68А"
+    store_address = "Тельмана 68А"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Тельмана 68А", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -194,11 +243,18 @@ async def he_strokina_2_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "О.Н. Строкина 2"
+    store_address = "О.Н. Строкина 2"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "О.Н. Строкина 2", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -210,11 +266,18 @@ async def bezitskaya_356a_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Бежицкая 356а"
+    store_address = "Бежицкая 356а"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Бежицкая 356а", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -226,11 +289,18 @@ async def krakhmaleva_23_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Крахмалёва 23"
+    store_address = "Крахмалёва 23"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Крахмалёва 23", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -242,11 +312,18 @@ async def pushkin_73_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Пушкина 73"
+    store_address = "Пушкина 73"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Пушкина 73", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -258,10 +335,19 @@ async def dukeeping_65_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Дуки 65"
+    store_address = "Дуки 65"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(callback_query, name, surname, event_user, "Дуки 65", phone)
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
+    )
 
 
 @router.callback_query(F.data == "international_15_end")
@@ -272,11 +358,18 @@ async def international_15_end(callback_query: CallbackQuery, state: FSMContext)
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Интернационала 15"
+    store_address = "Интернационала 15"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Интернационала 15", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -288,11 +381,18 @@ async def international_25_end(callback_query: CallbackQuery, state: FSMContext)
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Интернационала 25"
+    store_address = "Интернационала 25"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Интернационала 25", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -304,11 +404,18 @@ async def sosnovy_bor_1A_end(callback_query: CallbackQuery, state: FSMContext):
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Сосновый бор 1А"
+    store_address = "Сосновый бор 1А"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Сосновый бор 1А", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -320,11 +427,18 @@ async def stanke_dimitrova_67_end(callback_query: CallbackQuery, state: FSMConte
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Станке Димитрова 67"
+    store_address = "Станке Димитрова 67"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Станке Димитрова 67", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 
@@ -336,11 +450,18 @@ async def stanke_dimitrova_108b_end(callback_query: CallbackQuery, state: FSMCon
         text="До свидания!",
         reply_markup=start_menu_keyboard(),
     )
-    name, surname, event_user, phone = await send_user_registration_message_end(
-        callback_query, "Станке Димитрова 108Б"
+    store_address = "Станке Димитрова 108Б"
+    name, surname, event_user_end, phone = await send_user_registration_message_end(
+        callback_query, store_address
     )
-    recording_working_start(
-        callback_query, name, surname, event_user, "Станке Димитрова 108Б", phone
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_end=event_user_end,
+        time_end=datetime.now(),
     )
 
 

@@ -17,6 +17,8 @@ from database import (
     is_admin,
     recording_data_users_who_launched_bot,
     AdminBlockUser,
+    Person,
+    RecordDataWorkingStart,
 )
 from dispatcher import bot, dp, router
 from handlers.admin.admin import register_handler_who_at_work
@@ -39,49 +41,63 @@ async def command_start_handler(message: Message) -> None:
     :param message: Сообщение от пользователя.
     :return: None
     """
-    id_user = message.from_user.id  # id пользователя, отправившего команду /start
-    logger.info(f"Пользователь {id_user} отправил команду /start")
+    logger.info(f"Пользователь {message.from_user.id} отправил команду /start")
 
     # Проверяем, подписан ли пользователь на группу
     try:
-        chat_member = await bot.get_chat_member(chat_id=GROUP_CHAT_ID, user_id=id_user)
+        chat_member = await bot.get_chat_member(
+            chat_id=GROUP_CHAT_ID, user_id=message.from_user.id
+        )
         if chat_member.status not in [
             ChatMemberStatus.MEMBER,
             ChatMemberStatus.ADMINISTRATOR,
             ChatMemberStatus.CREATOR,
         ]:
-            logger.warning(f"Пользователь {id_user} не подписан на группу")
+            logger.warning(f"Пользователь {message.from_user.id} не подписан на группу")
             await bot.send_message(
-                chat_id=id_user,
+                chat_id=message.from_user.id,
                 text="❌ Вы не являетесь сотрудником компании, поэтому не можете использовать бота.\n\n",
             )
             return
     except Exception as e:
-        logger.error(f"Ошибка при проверке подписки пользователя {id_user}: {e}")
+        logger.error(
+            f"Ошибка при проверке подписки пользователя {message.from_user.id}: {e}"
+        )
         await bot.send_message(
-            chat_id=id_user,
+            chat_id=message.from_user.id,
             text="❌ Не удалось проверить подписку. Попробуйте позже.",
         )
         return
 
     # Записываем данные пользователя, который отправил команду /start
     recording_data_users_who_launched_bot(message)
-    db.create_tables([RegisterUserBot, AdminBot, AdminBlockUser])
+    db.create_tables(
+        [RegisterUserBot, AdminBot, AdminBlockUser, Person, RecordDataWorkingStart]
+    )
 
     # Проверяем, заблокирован ли пользователь
-    block = AdminBlockUser.select().where(AdminBlockUser.block_id == id_user).first()
-    if block:
-        logger.warning(f"Заблокированный пользователь {id_user} попытался войти")
+    if (
+        AdminBlockUser.select()
+        .where(AdminBlockUser.block_id == message.from_user.id)
+        .first()
+    ):
+        logger.warning(
+            f"Заблокированный пользователь {message.from_user.id} попытался войти"
+        )
         await bot.send_message(
             chat_id=message.chat.id,
             text="❌ Вам запрещён доступ к этому боту.",
         )
         return  # Прерываем выполнение функции
 
-    user = RegisterUserBot.select().where(RegisterUserBot.id_user == id_user).first()
+    user = (
+        RegisterUserBot.select()
+        .where(RegisterUserBot.id_user == message.from_user.id)
+        .first()
+    )
 
     # Проверяем, является ли пользователь администратором
-    admin = is_admin(id_user)
+    admin = is_admin(message.from_user.id)
 
     if user:
         if admin:
@@ -114,48 +130,62 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
     :param message: Сообщение от пользователя.
     :return: None
     """
-    id_user = (
-        callback_query.from_user.id
-    )  # id пользователя, отправившего команду /start
-    logger.info(f"Пользователь {id_user} отправил команду /start")
+    logger.info(f"Пользователь {callback_query.from_user.id} отправил команду /start")
 
     # Проверяем, подписан ли пользователь на группу
     try:
-        chat_member = await bot.get_chat_member(chat_id=GROUP_CHAT_ID, user_id=id_user)
+        chat_member = await bot.get_chat_member(
+            chat_id=GROUP_CHAT_ID, user_id=callback_query.from_user.id
+        )
         if chat_member.status not in [
             ChatMemberStatus.MEMBER,
             ChatMemberStatus.ADMINISTRATOR,
             ChatMemberStatus.CREATOR,
         ]:
-            logger.warning(f"Пользователь {id_user} не подписан на группу")
+            logger.warning(
+                f"Пользователь {callback_query.from_user.id} не подписан на группу"
+            )
             await bot.send_message(
-                chat_id=id_user,
+                chat_id=callback_query.from_user.id,
                 text="❌ Вы не являетесь сотрудником компании, поэтому не можете использовать бота.\n\n",
             )
             return
     except Exception as e:
-        logger.error(f"Ошибка при проверке подписки пользователя {id_user}: {e}")
+        logger.error(
+            f"Ошибка при проверке подписки пользователя {callback_query.from_user.id}: {e}"
+        )
         await bot.send_message(
-            chat_id=id_user,
+            chat_id=callback_query.from_user.id,
             text="❌ Не удалось проверить подписку. Попробуйте позже.",
         )
         return
 
-    db.create_tables([RegisterUserBot, AdminBot])
+    db.create_tables(
+        [RegisterUserBot, AdminBot, AdminBlockUser, Person, RecordDataWorkingStart]
+    )
 
     # Проверяем, заблокирован ли пользователь
-    block = AdminBlockUser.select().where(AdminBlockUser.block_id == id_user).first()
-    if block:
-        logger.warning(f"Заблокированный пользователь {id_user} попытался войти")
+    if (
+        AdminBlockUser.select()
+        .where(AdminBlockUser.block_id == callback_query.from_user.id)
+        .first()
+    ):
+        logger.warning(
+            f"Заблокированный пользователь {callback_query.from_user.id} попытался войти"
+        )
         await bot.send_message(
             chat_id=callback_query.from_user.id,
             text="❌ Вам запрещён доступ к этому боту.",
         )
         return  # Прерываем выполнение функции
 
-    user = RegisterUserBot.select().where(RegisterUserBot.id_user == id_user).first()
+    user = (
+        RegisterUserBot.select()
+        .where(RegisterUserBot.id_user == callback_query.from_user.id)
+        .first()
+    )
     # Проверяем, является ли пользователь администратором
-    admin = is_admin(id_user)
+    admin = is_admin(callback_query.from_user.id)
 
     if user:
         if admin:

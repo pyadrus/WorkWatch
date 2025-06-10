@@ -167,45 +167,111 @@ class RecordDataWorkingStart(Model):
     id_user = IntegerField()  # id пользователя
     name = CharField()  # имя сотрудника
     surname = CharField()  # фамилия сотрудника
-    username = CharField()  # username аккаунта Telegram
-    event_user = CharField()  # событие пользователя
+    username = CharField(null=True)  # username аккаунта Telegram
+    event_user_start = CharField()  # событие пользователя
+    time_start = DateTimeField()  # время начала работы
+    event_user_end = CharField(null=True)  # событие пользователя
+    time_end = DateTimeField(null=True)  # время окончания работы
     store_address = CharField()  # адрес магазина
     phone = CharField()  # телефон сотрудника
-    time_start = DateTimeField()  # время начала работы
 
     class Meta:
         database = db
         table_name = "working_user"
 
 
-def recording_working_start(
-    callback_query, name, surname, event_user, store_address, phone
+def recording_working_start_or_end(
+    callback_query,
+    name,
+    surname,
+    store_address,
+    phone,
+    event_user_start=None,
+    event_user_end=None,
+    time_start=None,
+    time_end=None,
 ):
     """
-    Записывает в базу данных сотрудников, которые начали работать
-
-    Args:
-        callback_query (telegram.types.CallbackQuery): Объект колбэка, содержащий информацию о пользователе.
-        surname (str): Фамилия сотрудника.
-        event_user (str): Событие пользователя.
-        store_address (str): Адрес магазина.
-        phone (str): Телефон сотрудника.
-        name (str): Имя сотрудника.
+    Обрабатывает запись начала или окончания работы сотрудника.
+    Если есть только event_user_start — создаётся новая запись.
+    Если есть только event_user_end — обновляется существующая запись.
     """
     try:
         db.create_tables([RecordDataWorkingStart])
-        RecordDataWorkingStart.create(
-            id_user=callback_query.from_user.id,
-            name=name,
-            surname=surname,
-            username=callback_query.from_user.username or "",
-            event_user=event_user,
-            store_address=store_address,
-            phone=phone,
-            time_start=datetime.now(),
-        )
+        user_id = callback_query.from_user.id
+
+        if event_user_start and not event_user_end:
+            # Создаём запись о входе
+            data = {
+                "id_user": user_id,
+                "name": name,
+                "surname": surname,
+                "username": callback_query.from_user.username or None,
+                "event_user_start": event_user_start,
+                "time_start": time_start,
+                "event_user_end": None,
+                "time_end": None,
+                "store_address": store_address,
+                "phone": phone,
+            }
+            logger.info(f"[ENTRY] Creating work start record: {data}")
+            RecordDataWorkingStart.create(**data)
+
+        elif event_user_end and not event_user_start:
+            # Обновляем существующую запись
+            record = (
+                RecordDataWorkingStart.select()
+                .where(
+                    (RecordDataWorkingStart.id_user == user_id) &
+                    (fn.DATE(RecordDataWorkingStart.time_start) == datetime.now().date()) &
+                    (RecordDataWorkingStart.event_user_end.is_null(True))
+                )
+                .order_by(RecordDataWorkingStart.time_start.desc())
+                .first()
+            )
+            if record:
+                record.event_user_end = event_user_end
+                record.time_end = time_end
+                record.save()
+                logger.info(f"[EXIT] Updated work end record for user {user_id}")
+            else:
+                logger.warning(f"[EXIT] No entry record found for user {user_id} to update.")
+
     except Exception as error:
-        logger.exception(error)
+        logger.exception(f"[ERROR] {error}")
+
+
+def get_ongoing_record(user_id):
+    """
+    Возвращает первую незаконченную запись пользователя (где time_end == None)
+    """
+    try:
+        return RecordDataWorkingStart.get(
+            (RecordDataWorkingStart.id_user == user_id)
+            & (RecordDataWorkingStart.time_end.is_null(True))
+        )
+    except RecordDataWorkingStart.DoesNotExist:
+        return None
+
+
+def is_user_already_registered_today(user_id):
+    """
+    Проверяет, есть ли у пользователя запись за сегодняшний день.
+    """
+    today = datetime.now().date()
+    try:
+        exists = (
+            RecordDataWorkingStart.select()
+            .where(
+                (RecordDataWorkingStart.id_user == user_id)
+                & (fn.DATE(RecordDataWorkingStart.time_start) == today)
+            )
+            .exists()
+        )
+        return exists
+    except Exception as e:
+        logger.exception(e)
+        return False
 
 
 db.connect()

@@ -63,7 +63,7 @@ def register_admin_keyboard():
             ],
             [
                 InlineKeyboardButton(text="✅ На работе", callback_data="at_work"),
-                InlineKeyboardButton(text="🏃 Ушёл", callback_data="left"),
+                InlineKeyboardButton(text="🏠 Ушёл", callback_data="left"),
             ],
             [
                 InlineKeyboardButton(
