@@ -17,6 +17,22 @@ from dispatcher import bot, router
 from keyboards.keyboards import shops_keyboard_start, start_menu_keyboard
 
 
+async def handle_user_registration(callback_query, store_address):
+    name, surname, event_user, phone, event_user_start = (
+        await send_user_registration_message(callback_query, store_address)
+    )
+
+    recording_working_start_or_end(
+        callback_query,
+        name,
+        surname,
+        store_address,
+        phone,
+        event_user_start=event_user_start,
+        time_start=datetime.now(),
+    )
+
+
 @router.callback_query(F.data == "at_work")
 async def at_work(callback_query: CallbackQuery, state: FSMContext):
     """✅ Регистрация пользователей и запись данных в базу данных"""
@@ -96,18 +112,7 @@ async def foundry_68(callback_query: CallbackQuery, state: FSMContext):
         return
     store_address = "Литейная 68"
     # Если всё ок — продолжаем регистрацию
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
 
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -129,18 +134,7 @@ async def nikitin_5(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Никитина 5"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -161,18 +155,7 @@ async def moscow_154b(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Московский 154Б"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -193,18 +176,7 @@ async def moscow_34(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Московский 34"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -225,18 +197,7 @@ async def aviation_5A(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Авиационная 5А"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -257,18 +218,7 @@ async def aviation_13a(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Авиационная 13А"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -289,18 +239,7 @@ async def telmana_68A(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Тельмана 68А"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -321,18 +260,7 @@ async def he_strokina_2(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "О.Н. Строкина 2"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -353,18 +281,7 @@ async def bezitskaya_356a(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Бежицкая 356а"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -385,18 +302,7 @@ async def krakhmaleva_23(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Крахмалёва 23"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -417,18 +323,7 @@ async def pushkin_73(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Пушкина 73"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -449,18 +344,7 @@ async def dukeeping_65(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Дуки 65"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -481,18 +365,7 @@ async def international_15(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Интернационала 15"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -513,18 +386,7 @@ async def international_25(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Интернационала 25"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -545,18 +407,7 @@ async def sosnovy_bor_1A(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Сосновый бор 1А"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -577,18 +428,7 @@ async def stanke_dimitrova_67(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         return
     store_address = "Станке Димитрова 67"
-    name, surname, event_user, phone, event_user_start = (
-        await send_user_registration_message(callback_query, store_address)
-    )
-    recording_working_start_or_end(
-        callback_query,
-        name,
-        surname,
-        store_address,
-        phone,
-        event_user_start=event_user_start,
-        time_start=datetime.now(),
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
@@ -609,12 +449,7 @@ async def stanke_dimitrova_108b(callback_query: CallbackQuery, state: FSMContext
         await callback_query.answer()
         return
     store_address = "Станке Димитрова 108Б"
-    name, surname, event_user, phone = await send_user_registration_message(
-        callback_query, "Станке Димитрова 108Б"
-    )
-    recording_working_start_or_end(
-        callback_query, name, surname, "Станке Димитрова 108Б", phone
-    )
+    await handle_user_registration(callback_query, store_address)
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="Вы зарегистрированы. Хорошего дня!",
