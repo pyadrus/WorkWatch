@@ -98,7 +98,7 @@ async def foundry_68_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "nikitin_5_end")
-async def nikitin_5_end(callback_query: CallbackQuery, state: FSMContext):
+async def nikitin_5_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Никитина 5"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -121,7 +121,7 @@ async def nikitin_5_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "moscow_154b_end")
-async def moscow_154b_end(callback_query: CallbackQuery, state: FSMContext):
+async def moscow_154b_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Московский 154Б"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -144,7 +144,7 @@ async def moscow_154b_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "moscow_34_end")
-async def moscow_34_end(callback_query: CallbackQuery, state: FSMContext):
+async def moscow_34_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Московский 34"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -167,7 +167,7 @@ async def moscow_34_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "aviation_5A_end")
-async def aviation_5A_end(callback_query: CallbackQuery, state: FSMContext):
+async def aviation_5A_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Авиационная 5А"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -190,7 +190,7 @@ async def aviation_5A_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "aviation_13a_end")
-async def aviation_13a_end(callback_query: CallbackQuery, state: FSMContext):
+async def aviation_13a_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Авиационная 13А"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -213,7 +213,7 @@ async def aviation_13a_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "telmana_68A_end_end")
-async def telmana_68A_end_end(callback_query: CallbackQuery, state: FSMContext):
+async def telmana_68A_end_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Тельмана 68А"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -236,7 +236,7 @@ async def telmana_68A_end_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "he_strokina_2_end")
-async def he_strokina_2_end(callback_query: CallbackQuery, state: FSMContext):
+async def he_strokina_2_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина О.Н. Строкина 2"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -259,7 +259,7 @@ async def he_strokina_2_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "bezitskaya_356a_end")
-async def bezitskaya_356a_end(callback_query: CallbackQuery, state: FSMContext):
+async def bezitskaya_356a_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Бежицкая 356а"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -282,7 +282,7 @@ async def bezitskaya_356a_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "krakhmaleva_23_end")
-async def krakhmaleva_23_end(callback_query: CallbackQuery, state: FSMContext):
+async def krakhmaleva_23_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Крахмалёва 23"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -305,7 +305,7 @@ async def krakhmaleva_23_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "pushkin_73_end")
-async def pushkin_73_end(callback_query: CallbackQuery, state: FSMContext):
+async def pushkin_73_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Пушкина 73"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -328,7 +328,7 @@ async def pushkin_73_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "dukeeping_65_end")
-async def dukeeping_65_end(callback_query: CallbackQuery, state: FSMContext):
+async def dukeeping_65_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Дуки 65"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -351,7 +351,7 @@ async def dukeeping_65_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "international_15_end")
-async def international_15_end(callback_query: CallbackQuery, state: FSMContext):
+async def international_15_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Интернационала 15"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -374,7 +374,7 @@ async def international_15_end(callback_query: CallbackQuery, state: FSMContext)
 
 
 @router.callback_query(F.data == "international_25_end")
-async def international_25_end(callback_query: CallbackQuery, state: FSMContext):
+async def international_25_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Интернационала 25"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -397,7 +397,7 @@ async def international_25_end(callback_query: CallbackQuery, state: FSMContext)
 
 
 @router.callback_query(F.data == "sosnovy_bor_1A_end")
-async def sosnovy_bor_1A_end(callback_query: CallbackQuery, state: FSMContext):
+async def sosnovy_bor_1A_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Сосновый бор 1А"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -420,7 +420,7 @@ async def sosnovy_bor_1A_end(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "stanke_dimitrova_67_end")
-async def stanke_dimitrova_67_end(callback_query: CallbackQuery, state: FSMContext):
+async def stanke_dimitrova_67_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Станке Димитрова 67"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
@@ -443,7 +443,7 @@ async def stanke_dimitrova_67_end(callback_query: CallbackQuery, state: FSMConte
 
 
 @router.callback_query(F.data == "stanke_dimitrova_108b_end")
-async def stanke_dimitrova_108b_end(callback_query: CallbackQuery, state: FSMContext):
+async def stanke_dimitrova_108b_end(callback_query: CallbackQuery):
     """✅ Регистрация пользователя и запись данных в базу данных, адрес магазина Станке Димитрова 108Б"""
     await bot.send_message(
         chat_id=callback_query.from_user.id,
