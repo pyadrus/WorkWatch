@@ -92,10 +92,8 @@ async def command_start_handler(message: Message) -> None:
         return  # Прерываем выполнение функции
     user = await get_registered_user(update=message)
     # Проверяем, является ли пользователь администратором
-    admin = is_admin(message.from_user.id)
-
     if user:
-        if admin:
+        if is_admin(message.from_user.id):
             await bot.send_message(
                 chat_id=message.chat.id,
                 text=messages_start,
@@ -125,7 +123,6 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
     :param callback_query: Сообщение от пользователя.
     :return: None
     """
-    logger.info(f"Пользователь {callback_query.from_user.id} отправил команду /start")
 
     # Проверяем, подписан ли пользователь на группу
     try:
@@ -174,16 +171,10 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
         )
         return  # Прерываем выполнение функции
 
-    user = (
-        RegisterUserBot.select()
-        .where(RegisterUserBot.id_user == callback_query.from_user.id)
-        .first()
-    )
+    user = await get_registered_user(update=callback_query)
     # Проверяем, является ли пользователь администратором
-    admin = is_admin(callback_query.from_user.id)
-
     if user:
-        if admin:
+        if is_admin(callback_query.from_user.id):
             await bot.send_message(
                 chat_id=callback_query.from_user.id,
                 text=messages_start,
