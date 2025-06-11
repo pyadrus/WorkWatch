@@ -100,7 +100,7 @@ async def handle_registration_gender(callback: CallbackQuery, state: FSMContext)
 
 
 def registration_handler_register_user():
-    """Регистрация хендлеров"""
+    """Регистрация Handler"""
     router.callback_query.register(registration_user_handler)
     router.callback_query.register(handle_registration_name)
     router.callback_query.register(handle_registration_surname)

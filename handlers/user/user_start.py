@@ -118,7 +118,7 @@ async def at_work(callback_query: CallbackQuery):
 
 @router.callback_query(F.data.in_(STORE_ADDRESSES.keys()))
 async def handle_store_registration(callback_query: CallbackQuery):
-    """✅ Общий хэндлер для регистрации пользователя по любому адресу магазина"""
+    """✅ Общий Handler для регистрации пользователя по любому адресу магазина"""
     if await check_user_registration(callback_query):
         return
 
