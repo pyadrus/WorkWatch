@@ -308,14 +308,10 @@ async def who_at_work(callback_query: CallbackQuery):
 
 def register_handler_who_at_work():
     """Регистрация хендлера, кто на работе"""
-    router.callback_query.register(who_at_work, F.data == "who_at_work")
-    router.callback_query.register(admin_panel, F.data == "admin_panel")
-    router.callback_query.register(get_register_users, F.data == "get_register_users")
-    router.callback_query.register(
-        grant_administrator_rights, F.data == "grant_administrator_rights"
-    )
-    router.callback_query.register(block, F.data == "block")
-    router.callback_query.register(unblock, F.data == "unblock")
-    router.callback_query.register(
-        revoke_administrator_rights, F.data == "revoke_administrator_rights"
-    )
+    router.callback_query.register(who_at_work)
+    router.callback_query.register(admin_panel)
+    router.callback_query.register(get_register_users)
+    router.callback_query.register(grant_administrator_rights)
+    router.callback_query.register(block)
+    router.callback_query.register(unblock)
+    router.callback_query.register(revoke_administrator_rights)

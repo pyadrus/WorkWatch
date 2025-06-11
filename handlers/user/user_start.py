@@ -146,5 +146,5 @@ async def handle_store_registration(callback_query: CallbackQuery):
 
 def register_handlers_at_work():
     """Регистрация всех обработчиков"""
-    router.callback_query.register(at_work, F.data == "at_work")
+    router.callback_query.register(at_work)
     router.callback_query.register(handle_store_registration)

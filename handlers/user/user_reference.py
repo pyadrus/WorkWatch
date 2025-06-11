@@ -31,4 +31,4 @@ async def reference(callback_query: CallbackQuery):
 
 def register_handler_reference():
     """Регистрация ❓ «Справка»"""
-    router.callback_query.register(reference, F.data == "reference")
+    router.callback_query.register(reference)

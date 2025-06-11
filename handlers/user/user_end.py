@@ -114,5 +114,5 @@ async def handle_store_end(callback_query: CallbackQuery):
 
 def register_handlers_left():
     """Регистрация хэндлеров, кто покинул работу"""
-    router.callback_query.register(left, text="at_work")
+    router.callback_query.register(left)
     router.callback_query.register(handle_store_end)
