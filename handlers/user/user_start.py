@@ -59,9 +59,8 @@ async def send_user_registration_message(callback_query, store_address):
     elif user.gender == "женский":
         event_user_start = "пришла на работу"
 
-    user_link = (
-        f"<a href='https://t.me/{user.username}'>{user.name}  {user.surname}</a>"
-    )
+    user_link = f"<a href='https://t.me/{user.username}'>{user.name} {user.surname}</a>"
+
     await bot.send_message(
         chat_id=-1002678330553,  # ID чата, куда отправляется сообщение
         text=(
@@ -70,9 +69,9 @@ async def send_user_registration_message(callback_query, store_address):
             f"📞 Телефон: {user.phone}\n"
             f"🕒 Время: {datetime.now().strftime('%H:%M')}\n"
             f"✅ Чек лист выполнен"
-        ),
-        parse_mode="HTML",
-        disable_web_page_preview=True,
+        ),  # Текст сообщения
+        parse_mode="HTML",  # Режим разметки текста
+        disable_web_page_preview=True,  # Предварительный просмотр страницы
     )
     return user.name, user.surname, user.phone, event_user_start
 
