@@ -7,6 +7,7 @@ from loguru import logger
 
 from database import RegisterUserBot, db, recording_working_start_or_end, AdminBlockUser
 from dispatcher import bot, router
+from handlers.user.user_start import defining_event_by_gender
 from keyboards.keyboards import shops_keyboard_end, start_menu_keyboard
 
 
@@ -48,17 +49,14 @@ async def send_user_registration_message_end(callback_query, store_address):
         .where(RegisterUserBot.id_user == callback_query.from_user.id)
         .first()
     )
-
-    if user.gender == "мужской":
-        event_user_end = "покинул работу"
-    elif user.gender == "женский":
-        event_user_end = "покинула работу"
-
+    event_user = await defining_event_by_gender(
+        user=user, event_men="покинул работу", event_women="покинул работу"
+    )
     user_link = f"<a href='https://t.me/{user.username}'>{user.name} {user.surname}</a>"
     await bot.send_message(
         chat_id=-1002678330553,  # ID чата, куда отправляется сообщение
         text=(
-            f"👤 {user_link} {event_user_end}\n"
+            f"👤 {user_link} {event_user}\n"
             f"📍 Адрес: {store_address}\n"
             f"📞 Телефон: {user.phone}\n"
             f"🕒 Время: {datetime.now().strftime("%H:%M")}"
@@ -66,7 +64,7 @@ async def send_user_registration_message_end(callback_query, store_address):
         parse_mode="HTML",  # Режим разметки текста
         disable_web_page_preview=True,  # Предварительный просмотр страницы
     )
-    return user.name, user.surname, event_user_end, user.phone
+    return user.name, user.surname, event_user, user.phone
 
 
 # Словарь соответствий между callback.data и адресами магазинов

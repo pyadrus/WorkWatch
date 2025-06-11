@@ -47,6 +47,21 @@ async def check_user_registration(callback_query):
     return False  # Пользователь не зарегистрирован сегодня
 
 
+async def defining_event_by_gender(user, event_men, event_women):
+    """✅ Определяет событие в зависимости от пола пользователя
+
+    :param user: объект пользователя
+    :param event_men: мужской вариант события
+    :param event_women: женский вариант события
+    :return event_user: событие в зависимости от пола пользователя"""
+    if user.gender == "мужской":
+        event_user: str = event_men
+    elif user.gender == "женский":
+        event_user: str = event_women
+
+    return event_user
+
+
 async def send_user_registration_message(callback_query, store_address):
     db.create_tables([RegisterUserBot])
     user = (
@@ -54,17 +69,14 @@ async def send_user_registration_message(callback_query, store_address):
         .where(RegisterUserBot.id_user == callback_query.from_user.id)
         .first()
     )
-    if user.gender == "мужской":
-        event_user_start = "пришел на работу"
-    elif user.gender == "женский":
-        event_user_start = "пришла на работу"
-
+    event_user = await defining_event_by_gender(
+        user=user, event_men="пришел на работу", event_women="пришла на работу"
+    )
     user_link = f"<a href='https://t.me/{user.username}'>{user.name} {user.surname}</a>"
-
     await bot.send_message(
         chat_id=-1002678330553,  # ID чата, куда отправляется сообщение
         text=(
-            f"👤 {user_link} {event_user_start}\n"
+            f"👤 {user_link} {event_user}\n"
             f"📍 Адрес: {store_address}\n"
             f"📞 Телефон: {user.phone}\n"
             f"🕒 Время: {datetime.now().strftime('%H:%M')}\n"
@@ -73,7 +85,7 @@ async def send_user_registration_message(callback_query, store_address):
         parse_mode="HTML",  # Режим разметки текста
         disable_web_page_preview=True,  # Предварительный просмотр страницы
     )
-    return user.name, user.surname, user.phone, event_user_start
+    return user.name, user.surname, user.phone, event_user
 
 
 @router.callback_query(F.data == "at_work")

@@ -222,9 +222,12 @@ def recording_working_start_or_end(
             record = (
                 RecordDataWorkingStart.select()
                 .where(
-                    (RecordDataWorkingStart.id_user == user_id) &
-                    (fn.DATE(RecordDataWorkingStart.time_start) == datetime.now().date()) &
-                    (RecordDataWorkingStart.event_user_end.is_null(True))
+                    (RecordDataWorkingStart.id_user == user_id)
+                    & (
+                        fn.DATE(RecordDataWorkingStart.time_start)
+                        == datetime.now().date()
+                    )
+                    & (RecordDataWorkingStart.event_user_end.is_null(True))
                 )
                 .order_by(RecordDataWorkingStart.time_start.desc())
                 .first()
@@ -235,7 +238,9 @@ def recording_working_start_or_end(
                 record.save()
                 logger.info(f"[EXIT] Updated work end record for user {user_id}")
             else:
-                logger.warning(f"[EXIT] No entry record found for user {user_id} to update.")
+                logger.warning(
+                    f"[EXIT] No entry record found for user {user_id} to update."
+                )
 
     except Exception as error:
         logger.exception(f"[ERROR] {error}")

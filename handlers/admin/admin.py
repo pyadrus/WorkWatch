@@ -32,7 +32,7 @@ async def revoke_administrator_rights(callback_query: CallbackQuery, state: FSMC
 
 
 @router.message(AdminState.revoke_admin_rights)
-async def revoke_admin_rights(message: Message, state: FSMContext):
+async def revoke_admin_rights(message: Message):
     if message.text.isdigit():
         user_id = int(message.text)
         try:
@@ -56,7 +56,7 @@ async def unblock(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.message(AdminState.unblock_id)
-async def unblock(message: Message, state: FSMContext):
+async def unblock(message: Message):
     if message.text.isdigit():
         user_id = int(message.text)
         try:
@@ -235,7 +235,7 @@ async def admin_panel(callback_query: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "who_at_work")
-async def who_at_work(callback_query: CallbackQuery, state: FSMContext):
+async def who_at_work(callback_query: CallbackQuery):
     """✅ Получение пользователей, которые на работе"""
 
     current_date = date.today()
