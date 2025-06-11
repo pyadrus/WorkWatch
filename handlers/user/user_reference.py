@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 from aiogram import F
-from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
+from loguru import logger
 
 from database import AdminBlockUser
 from dispatcher import bot, router
 from keyboards.keyboards import start_menu_keyboard
-from loguru import logger
-
 from messages.messages import messages_start
 
 
 @router.callback_query(F.data == "reference")
-async def reference(callback_query: CallbackQuery, state: FSMContext):
+async def reference(callback_query: CallbackQuery):
     """❓ «Справка»"""
     id_user = callback_query.from_user.id  # id пользователя
     # Проверяем, заблокирован ли пользователь

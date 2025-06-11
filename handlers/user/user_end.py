@@ -5,11 +5,11 @@ from aiogram import F
 from aiogram.types import CallbackQuery
 from loguru import logger
 
-from database import RegisterUserBot, db, recording_working_start_or_end, AdminBlockUser
+from database import recording_working_start_or_end, AdminBlockUser
 from dispatcher import bot, router
 from handlers.user.user_start import (
     defining_event_by_gender,
-    reads_table_with_registered_users,
+    get_registered_user,
 )
 from keyboards.keyboards import shops_keyboard_end, start_menu_keyboard
 
@@ -46,7 +46,7 @@ async def send_user_registration_message_end(callback_query, store_address):
     Returns:
         None
     """
-    user = await reads_table_with_registered_users(callback_query)
+    user = await get_registered_user(update=callback_query)
     event_user = await defining_event_by_gender(
         user=user, event_men="покинул работу", event_women="покинул работу"
     )

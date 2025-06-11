@@ -246,17 +246,17 @@ def recording_working_start_or_end(
         logger.exception(f"[ERROR] {error}")
 
 
-def get_ongoing_record(user_id):
+async def get_registered_user(update):
     """
-    Возвращает первую незаконченную запись пользователя (где time_end == None)
+    Универсальная функция для получения зарегистрированного пользователя по update-объекту (message или callback_query)
+
+    :param update: объект message или callback_query
+    :return: объект пользователя из модели RegisterUserBot или None
     """
-    try:
-        return RecordDataWorkingStart.get(
-            (RecordDataWorkingStart.id_user == user_id)
-            & (RecordDataWorkingStart.time_end.is_null(True))
-        )
-    except RecordDataWorkingStart.DoesNotExist:
-        return None
+    db.create_tables([RegisterUserBot])  # Создаем таблицу, если её нет
+    user_id = update.from_user.id
+    user = RegisterUserBot.select().where(RegisterUserBot.id_user == user_id).first()
+    return user
 
 
 def is_user_already_registered_today(user_id):

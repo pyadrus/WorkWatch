@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+
 from aiogram import F
 from aiogram.types import CallbackQuery
 from loguru import logger
+
 from database import (
-    RegisterUserBot,
-    db,
     recording_working_start_or_end,
     AdminBlockUser,
     is_user_already_registered_today,
+    get_registered_user,
 )
 from dispatcher import bot, router
 from keyboards.keyboards import shops_keyboard_start, start_menu_keyboard
-
 
 # Словарь соответствий между callback.data и адресами магазинов
 STORE_ADDRESSES = {
@@ -64,22 +64,6 @@ async def defining_event_by_gender(user, event_men, event_women):
     return event_user
 
 
-async def reads_table_with_registered_users(callback_query):
-    """
-    Читает таблицу с зарегистрированными пользователями
-
-    :param callback_query: объект callback_query
-    :return user: объект пользователя
-    """
-    db.create_tables([RegisterUserBot])  # Создаем таблицу, если её нет
-    user = (
-        RegisterUserBot.select()
-        .where(RegisterUserBot.id_user == callback_query.from_user.id)
-        .first()
-    )
-    return user
-
-
 async def send_user_registration_message(callback_query, store_address):
     """
     Отправляет сообщение о регистрации пользователя в группу
@@ -87,7 +71,7 @@ async def send_user_registration_message(callback_query, store_address):
     :param callback_query: объект callback_query
     :param store_address: адрес магазина
     """
-    user = await reads_table_with_registered_users(callback_query)
+    user = await get_registered_user(update=callback_query)
     event_user = await defining_event_by_gender(
         user=user, event_men="пришел на работу", event_women="пришла на работу"
     )

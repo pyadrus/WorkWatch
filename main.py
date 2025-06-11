@@ -19,6 +19,7 @@ from database import (
     AdminBlockUser,
     Person,
     RecordDataWorkingStart,
+    get_registered_user,
 )
 from dispatcher import bot, dp, router
 from handlers.admin.admin import register_handler_who_at_work
@@ -89,13 +90,7 @@ async def command_start_handler(message: Message) -> None:
             text="❌ Вам запрещён доступ к этому боту.",
         )
         return  # Прерываем выполнение функции
-
-    user = (
-        RegisterUserBot.select()
-        .where(RegisterUserBot.id_user == message.from_user.id)
-        .first()
-    )
-
+    user = await get_registered_user(update=message)
     # Проверяем, является ли пользователь администратором
     admin = is_admin(message.from_user.id)
 
@@ -127,7 +122,7 @@ async def back_start_handler(callback_query: CallbackQuery, state: FSMContext) -
     """
     Обрабатывает команду `/start`.
 
-    :param message: Сообщение от пользователя.
+    :param callback_query: Сообщение от пользователя.
     :return: None
     """
     logger.info(f"Пользователь {callback_query.from_user.id} отправил команду /start")
