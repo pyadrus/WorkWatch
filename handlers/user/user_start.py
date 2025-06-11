@@ -48,12 +48,14 @@ async def check_user_registration(callback_query):
 
 
 async def defining_event_by_gender(user, event_men, event_women):
-    """✅ Определяет событие в зависимости от пола пользователя
+    """
+    ✅ Определяет событие в зависимости от пола пользователя
 
     :param user: объект пользователя
     :param event_men: мужской вариант события
     :param event_women: женский вариант события
-    :return event_user: событие в зависимости от пола пользователя"""
+    :return event_user: событие в зависимости от пола пользователя
+    """
     if user.gender == "мужской":
         event_user: str = event_men
     elif user.gender == "женский":
@@ -62,17 +64,35 @@ async def defining_event_by_gender(user, event_men, event_women):
     return event_user
 
 
-async def send_user_registration_message(callback_query, store_address):
-    db.create_tables([RegisterUserBot])
+async def reads_table_with_registered_users(callback_query):
+    """
+    Читает таблицу с зарегистрированными пользователями
+
+    :param callback_query: объект callback_query
+    :return user: объект пользователя
+    """
+    db.create_tables([RegisterUserBot])  # Создаем таблицу, если её нет
     user = (
         RegisterUserBot.select()
         .where(RegisterUserBot.id_user == callback_query.from_user.id)
         .first()
     )
+    return user
+
+
+async def send_user_registration_message(callback_query, store_address):
+    """
+    Отправляет сообщение о регистрации пользователя в группу
+
+    :param callback_query: объект callback_query
+    :param store_address: адрес магазина
+    """
+    user = await reads_table_with_registered_users(callback_query)
     event_user = await defining_event_by_gender(
         user=user, event_men="пришел на работу", event_women="пришла на работу"
     )
     user_link = f"<a href='https://t.me/{user.username}'>{user.name} {user.surname}</a>"
+
     await bot.send_message(
         chat_id=-1002678330553,  # ID чата, куда отправляется сообщение
         text=(

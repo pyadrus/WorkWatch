@@ -7,7 +7,10 @@ from loguru import logger
 
 from database import RegisterUserBot, db, recording_working_start_or_end, AdminBlockUser
 from dispatcher import bot, router
-from handlers.user.user_start import defining_event_by_gender
+from handlers.user.user_start import (
+    defining_event_by_gender,
+    reads_table_with_registered_users,
+)
 from keyboards.keyboards import shops_keyboard_end, start_menu_keyboard
 
 
@@ -43,12 +46,7 @@ async def send_user_registration_message_end(callback_query, store_address):
     Returns:
         None
     """
-    db.create_tables([RegisterUserBot])
-    user = (
-        RegisterUserBot.select()
-        .where(RegisterUserBot.id_user == callback_query.from_user.id)
-        .first()
-    )
+    user = await reads_table_with_registered_users(callback_query)
     event_user = await defining_event_by_gender(
         user=user, event_men="покинул работу", event_women="покинул работу"
     )
