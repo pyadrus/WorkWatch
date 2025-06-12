@@ -57,8 +57,6 @@ async def command_start_handler(message: Message) -> None:
             text="❌ Вы не являетесь сотрудником компании, поэтому не можете использовать бота.\n\n",
         )
         return
-    # Записываем данные пользователя, который отправил команду /start
-    recording_data_users_who_launched_bot(message)
     db.create_tables(
         [RegisterUserBot, AdminBot, AdminBlockUser, Person, RecordDataWorkingStart]
     )
@@ -76,7 +74,9 @@ async def command_start_handler(message: Message) -> None:
             text="❌ Вам запрещён доступ к этому боту.",
         )
         return  # Прерываем выполнение функции
+
     user = await get_registered_user(update=message)
+
     # Проверяем, является ли пользователь администратором
     if user:
         if is_admin(message.from_user.id):
@@ -91,6 +91,8 @@ async def command_start_handler(message: Message) -> None:
                 text=messages_start,
                 reply_markup=start_keyboard(),
             )
+            # Записываем данные пользователя, который отправил команду /start
+            recording_data_users_who_launched_bot(message)
     else:
         await bot.send_message(
             chat_id=message.chat.id,
@@ -126,9 +128,6 @@ async def back_start_handler(callback_query: CallbackQuery) -> None:
             text="❌ Вы не являетесь сотрудником компании, поэтому не можете использовать бота.\n\n",
         )
         return
-    db.create_tables(
-        [RegisterUserBot, AdminBot, AdminBlockUser, Person, RecordDataWorkingStart]
-    )
     # Проверяем, заблокирован ли пользователь
     if (
         AdminBlockUser.select()
