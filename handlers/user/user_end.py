@@ -4,8 +4,13 @@ from datetime import datetime
 from aiogram import F
 from aiogram.types import CallbackQuery
 from loguru import logger
+from peewee import fn
 
-from database import recording_working_start_or_end, AdminBlockUser
+from database import (
+    recording_working_start_or_end,
+    AdminBlockUser,
+    RecordDataWorkingStart,
+)
 from dispatcher import bot, router
 from handlers.user.user_start import (
     defining_event_by_gender,
@@ -90,6 +95,31 @@ STORE_ADDRESSES_END = {
 @router.callback_query(F.data.in_(STORE_ADDRESSES_END.keys()))
 async def handle_store_end(callback_query: CallbackQuery):
     """✅ Обработчик выхода из смены для всех магазинов"""
+
+    # Проверяем, есть ли незавершённая запись (вход без выхода) за сегодня
+    today = datetime.now().date()
+    record = (
+        RecordDataWorkingStart.select()
+        .where(
+            (RecordDataWorkingStart.id_user == callback_query.from_user.id)
+            & (fn.DATE(RecordDataWorkingStart.time_start) == today)
+            & (RecordDataWorkingStart.event_user_end.is_null(True))
+        )
+        .order_by(RecordDataWorkingStart.time_start.desc())
+        .first()
+    )
+
+    if not record:
+        logger.warning(
+            f"Пользователь {callback_query.from_user.id} пытается отметить уход без входа"
+        )
+        await bot.send_message(
+            chat_id=callback_query.from_user.id,
+            text="❌ Невозможно зафиксировать уход — вы не отметились на работу сегодня.",
+            reply_markup=start_menu_keyboard(),
+        )
+        return  # Прерываем выполнение функции
+
     await bot.send_message(
         chat_id=callback_query.from_user.id,
         text="До свидания!",
