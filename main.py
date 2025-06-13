@@ -28,7 +28,7 @@ from handlers.user.user_registration import registration_handler_register_user
 from handlers.user.user_start import register_handlers_at_work
 from keyboards.admin import register_admin_keyboard
 from keyboards.keyboards import register_user_keyboard, start_keyboard
-from messages.messages import messages_start
+from messages.messages import messages_start, messages_welcome
 
 GROUP_CHAT_ID = -1002678330553  # ID группы
 
@@ -80,19 +80,42 @@ async def command_start_handler(message: Message) -> None:
     # Проверяем, является ли пользователь администратором
     if user:
         if is_admin(message.from_user.id):
-            await bot.send_message(
-                chat_id=message.chat.id,
-                text=messages_start,
-                reply_markup=register_admin_keyboard(),
-            )
+            if Person.select().where(Person.id_user == message.chat.id).exists():
+                # Пользователь уже есть в базе — повторный запуск
+                await bot.send_message(
+                    chat_id=message.chat.id,
+                    text=messages_welcome,
+                    reply_markup=register_admin_keyboard(),
+                )
+            else:
+                # Новый пользователь — первый запуск
+                await bot.send_message(
+                    chat_id=message.chat.id,
+                    text=messages_start,
+                    reply_markup=register_admin_keyboard(),
+                )
+                # Записываем данные пользователя, который отправил команду /start
+                recording_data_users_who_launched_bot(update=message)
         else:
-            await bot.send_message(
-                chat_id=message.chat.id,
-                text=messages_start,
-                reply_markup=start_keyboard(),
-            )
-            # Записываем данные пользователя, который отправил команду /start
-            recording_data_users_who_launched_bot(message)
+            print(user.name, user.surname)
+            # Проверяем, запускал ли пользователь бота ранее или нет
+            if Person.select().where(Person.id_user == message.chat.id).exists():
+                # Пользователь уже есть в базе — повторный запуск
+                await bot.send_message(
+                    chat_id=message.chat.id,
+                    text=messages_welcome,
+                    reply_markup=start_keyboard(),
+                )
+            else:
+                # Новый пользователь — первый запуск
+                await bot.send_message(
+                    chat_id=message.chat.id,
+                    text=messages_start,
+                    reply_markup=start_keyboard(),
+                )
+                # Записываем данные пользователя, который отправил команду /start
+                recording_data_users_who_launched_bot(update=message)
+
     else:
         await bot.send_message(
             chat_id=message.chat.id,
@@ -146,18 +169,48 @@ async def back_start_handler(callback_query: CallbackQuery) -> None:
     # Проверяем, является ли пользователь администратором
     if user:
         if is_admin(callback_query.from_user.id):
-            await bot.send_message(
-                chat_id=callback_query.from_user.id,
-                text=messages_start,
-                reply_markup=register_admin_keyboard(),
-            )
+            # Проверяем, запускал ли пользователь бота ранее или нет
+            if (
+                Person.select()
+                .where(Person.id_user == callback_query.from_user.id)
+                .exists()
+            ):
+                # Пользователь уже есть в базе — повторный запуск
+                await bot.send_message(
+                    chat_id=callback_query.from_user.id,
+                    text=messages_welcome,
+                    reply_markup=register_admin_keyboard(),
+                )
+            else:
+                # Новый пользователь — первый запуск
+                await bot.send_message(
+                    chat_id=callback_query.from_user.id,
+                    text=messages_start,
+                    reply_markup=register_admin_keyboard(),
+                )
+                recording_data_users_who_launched_bot(update=callback_query)
         else:
             print(user.name, user.surname)
-            await bot.send_message(
-                chat_id=callback_query.from_user.id,
-                text=messages_start,
-                reply_markup=start_keyboard(),
-            )
+            # Проверяем, запускал ли пользователь бота ранее или нет
+            if (
+                Person.select()
+                .where(Person.id_user == callback_query.from_user.id)
+                .exists()
+            ):
+                # Пользователь уже есть в базе — повторный запуск
+                await bot.send_message(
+                    chat_id=callback_query.from_user.id,
+                    text=messages_welcome,
+                    reply_markup=start_keyboard(),
+                )
+            else:
+                # Новый пользователь — первый запуск
+                await bot.send_message(
+                    chat_id=callback_query.from_user.id,
+                    text=messages_start,
+                    reply_markup=start_keyboard(),
+                )
+                recording_data_users_who_launched_bot(update=callback_query)
     else:
         print("Пользователь не найден.")
         await bot.send_message(

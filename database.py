@@ -70,19 +70,19 @@ class Person(Model):
         table_name = "registered_users_start"
 
 
-def recording_data_users_who_launched_bot(message):
+def recording_data_users_who_launched_bot(update):
     """
     Записывает в базу данных сотрудников, которые запустили бота
 
     Args:
-        message: Объект сообщения, содержащий информацию о пользователе, который запустил бота
+        update: Объект сообщения, содержащий информацию о пользователе, который запустил бота
     """
     try:
         db.create_tables([Person])
         Person.create(
-            name=message.from_user.first_name or "",
-            surname=message.from_user.last_name or "",
-            id_user=message.from_user.id,
+            name=update.from_user.first_name or "",
+            surname=update.from_user.last_name or "",
+            id_user=update.from_user.id,
         )
     except Exception as error:
         logger.exception(error)
