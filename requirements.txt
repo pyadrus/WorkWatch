@@ -1,7 +1,8 @@
-aiogram
-dotenv
-loguru
-peewee
-logging
-openpyxl
-python-dotenv
+aiogram~=3.20.0.post0
+dotenv~=0.9.9
+loguru~=0.7.3
+peewee~=3.17.9
+logging~=0.4.9.6
+openpyxl~=3.1.5
+python-dotenv~=1.0.1
+APScheduler~=3.11.0

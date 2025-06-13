@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+
+from datetime import datetime, timedelta
 
 from aiogram import F
 from aiogram.types import CallbackQuery
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from loguru import logger
 from peewee import fn
 
@@ -17,6 +19,46 @@ from handlers.user.user_start import (
     get_registered_user,
 )
 from keyboards.keyboards import shops_keyboard_end, start_menu_keyboard
+
+
+def setup_scheduler(app):
+    scheduler = AsyncIOScheduler()
+
+    # Запускать задачу раз в час
+    scheduler.add_job(check_and_auto_exit_employees, "interval", hours=1)
+    scheduler.start()
+
+
+async def check_and_auto_exit_employees():
+    """
+    Проверяет все незакрытые смены старше 14 часов и автоматически закрывает их.
+    """
+    try:
+        now = datetime.now()
+        cutoff_time = now - timedelta(hours=14)
+
+        # Ищем все записи без event_user_end и старше 14 часов
+        records = (
+            RecordDataWorkingStart.select()
+            .where(
+                (RecordDataWorkingStart.time_start < cutoff_time)
+                & (RecordDataWorkingStart.event_user_end.is_null(True))
+            )
+            .execute()
+        )
+
+        for record in records:
+            logger.info(f"Авто-уход для пользователя {record.id_user}")
+
+            # Обновляем запись
+            record.event_user_end = "автоматически покинул работу"
+            record.time_end = datetime.now()
+            record.save()
+
+            logger.info(f"Авто-уход успешно выполнен для {record.id_user}")
+
+    except Exception as e:
+        logger.exception(f"[ERROR] Ошибка при авто-уходе: {e}")
 
 
 @router.callback_query(F.data == "left")

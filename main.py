@@ -22,7 +22,7 @@ from database import (
 )
 from dispatcher import bot, dp, router
 from handlers.admin.admin import register_handler_who_at_work
-from handlers.user.user_end import register_handlers_left
+from handlers.user.user_end import register_handlers_left, setup_scheduler
 from handlers.user.user_reference import register_handler_reference
 from handlers.user.user_registration import registration_handler_register_user
 from handlers.user.user_start import register_handlers_at_work
@@ -233,6 +233,7 @@ async def main() -> None:
     register_handler_who_at_work()  # Запускаем функцию регистрации пользователя, которые на работе
     register_handler_reference()  # Регистрация справки
 
+    setup_scheduler(dp)  # Проверка на наличие ухода сотрудников в течении 14 часов
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
