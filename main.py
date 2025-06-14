@@ -41,7 +41,6 @@ async def command_start_handler(message: Message) -> None:
     :param message: Сообщение от пользователя.
     :return: None
     """
-    logger.info(f"Пользователь {message.from_user.id} отправил команду /start")
     # Проверяем, подписан ли пользователь на группу
     chat_member = await bot.get_chat_member(
         chat_id=GROUP_CHAT_ID, user_id=message.from_user.id
@@ -51,7 +50,6 @@ async def command_start_handler(message: Message) -> None:
         ChatMemberStatus.ADMINISTRATOR,
         ChatMemberStatus.CREATOR,
     ]:
-        logger.warning(f"Пользователь {message.from_user.id} не подписан на группу")
         await bot.send_message(
             chat_id=message.from_user.id,
             text="❌ Вы не являетесь сотрудником компании, поэтому не можете использовать бота.\n\n",
@@ -66,9 +64,6 @@ async def command_start_handler(message: Message) -> None:
         .where(AdminBlockUser.block_id == message.from_user.id)
         .first()
     ):
-        logger.warning(
-            f"Заблокированный пользователь {message.from_user.id} попытался войти"
-        )
         await bot.send_message(
             chat_id=message.chat.id,
             text="❌ Вам запрещён доступ к этому боту.",
@@ -143,9 +138,6 @@ async def back_start_handler(callback_query: CallbackQuery) -> None:
         ChatMemberStatus.ADMINISTRATOR,
         ChatMemberStatus.CREATOR,
     ]:
-        logger.warning(
-            f"Пользователь {callback_query.from_user.id} не подписан на группу"
-        )
         await bot.send_message(
             chat_id=callback_query.from_user.id,
             text="❌ Вы не являетесь сотрудником компании, поэтому не можете использовать бота.\n\n",
@@ -157,9 +149,6 @@ async def back_start_handler(callback_query: CallbackQuery) -> None:
         .where(AdminBlockUser.block_id == callback_query.from_user.id)
         .first()
     ):
-        logger.warning(
-            f"Заблокированный пользователь {callback_query.from_user.id} попытался войти"
-        )
         await bot.send_message(
             chat_id=callback_query.from_user.id,
             text="❌ Вам запрещён доступ к этому боту.",
@@ -190,7 +179,6 @@ async def back_start_handler(callback_query: CallbackQuery) -> None:
                 )
                 recording_data_users_who_launched_bot(update=callback_query)
         else:
-            print(user.name, user.surname)
             # Проверяем, запускал ли пользователь бота ранее или нет
             if (
                 Person.select()
@@ -212,7 +200,6 @@ async def back_start_handler(callback_query: CallbackQuery) -> None:
                 )
                 recording_data_users_who_launched_bot(update=callback_query)
     else:
-        print("Пользователь не найден.")
         await bot.send_message(
             chat_id=callback_query.from_user.id,
             text="Для использования бота, пройдите регистрацию",
@@ -234,6 +221,7 @@ async def main() -> None:
     register_handler_reference()  # Регистрация справки
 
     setup_scheduler(dp)  # Проверка на наличие ухода сотрудников в течении 14 часов
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
