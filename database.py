@@ -117,13 +117,12 @@ def registration_user(callback, name, surname, phone, gender):
     """
     Записывает или обновляет данные сотрудника в базе данных,
     если он зарегистрировался в Telegram боте.
-
-    Args:
-        callback: Объект колбэка, содержащий информацию о пользователе.
-        name (str): Имя сотрудника.
-        surname (str): Фамилия сотрудника.
-        phone (str): Телефон сотрудника.
-        gender (str): Пол сотрудника.
+    :param callback: Объект колбэка, содержащий информацию о пользователе.
+    :param name: Имя сотрудника.
+    :param  surname: Фамилия сотрудника.
+    :param phone: Телефон сотрудника.
+    :param gender: Пол сотрудника.
+    :return: None
     """
     try:
         db.create_tables([RegisterUserBot])
@@ -263,9 +262,11 @@ async def get_registered_user(update):
     :return: объект пользователя из модели RegisterUserBot или None
     """
     db.create_tables([RegisterUserBot])  # Создаем таблицу, если её нет
-    user_id = update.from_user.id
-    user = RegisterUserBot.select().where(RegisterUserBot.id_user == user_id).first()
-    return user
+    return (
+        RegisterUserBot.select()
+        .where(RegisterUserBot.id_user == update.from_user.id)
+        .first()
+    )
 
 
 def is_user_already_registered_today(user_id):
@@ -275,7 +276,8 @@ def is_user_already_registered_today(user_id):
     """
     today = datetime.now().date()
     try:
-        exists = (
+
+        return (
             RecordDataWorkingStart.select()
             .where(
                 (RecordDataWorkingStart.id_user == user_id)
@@ -283,7 +285,6 @@ def is_user_already_registered_today(user_id):
             )
             .exists()
         )
-        return exists
     except Exception as e:
         logger.exception(e)
         return False
