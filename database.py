@@ -271,6 +271,7 @@ async def get_registered_user(update):
 def is_user_already_registered_today(user_id):
     """
     Проверяет, есть ли у пользователя запись за сегодняшний день.
+    :param user_id: ID пользователя
     """
     today = datetime.now().date()
     try:
