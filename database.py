@@ -195,6 +195,15 @@ def recording_working_start_or_end(
     Обрабатывает запись начала или окончания работы сотрудника.
     Если есть только event_user_start — создаётся новая запись.
     Если есть только event_user_end — обновляется существующая запись.
+    :param callback_query: Объект callback_query, содержащий информацию о пользователе.
+    :param name: Имя сотрудника.
+    :param surname: Фамилия сотрудника.
+    :param store_address: Адрес магазина.
+    :param phone: Телефон сотрудника.
+    :param event_user_start: Событие начала работы.
+    :param event_user_end: Событие окончания работы.
+    :param time_start: Время начала работы.
+    :param time_end: Время окончания работы.
     """
     try:
         db.create_tables([RecordDataWorkingStart])
