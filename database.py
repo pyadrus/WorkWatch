@@ -168,6 +168,7 @@ class RecordDataWorkingStart(Model):
     surname = CharField()  # фамилия сотрудника
     username = CharField(null=True)  # username аккаунта Telegram
     event_user_start = CharField()  # событие пользователя
+    date_event = DateField()  # дата события
     time_start = DateTimeField()  # время начала работы
     event_user_end = CharField(null=True)  # событие пользователя
     time_end = DateTimeField(null=True)  # время окончания работы
@@ -189,6 +190,7 @@ def recording_working_start_or_end(
     event_user_end=None,
     time_start=None,
     time_end=None,
+    date_event=None,
 ):
     """
     Обрабатывает запись начала или окончания работы сотрудника.
@@ -203,6 +205,7 @@ def recording_working_start_or_end(
     :param event_user_end: Событие окончания работы.
     :param time_start: Время начала работы.
     :param time_end: Время окончания работы.
+    :param date_event: Дата события
     """
     try:
         db.create_tables([RecordDataWorkingStart])
@@ -216,6 +219,7 @@ def recording_working_start_or_end(
                 "surname": surname,
                 "username": callback_query.from_user.username or None,
                 "event_user_start": event_user_start,
+                "date_event": date_event,
                 "time_start": time_start,
                 "event_user_end": None,
                 "time_end": None,

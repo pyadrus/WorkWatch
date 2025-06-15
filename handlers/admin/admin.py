@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from datetime import date, datetime
+from datetime import datetime, date
 from io import BytesIO
-
+from peewee import fn
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import BufferedInputFile, CallbackQuery, Message
@@ -207,9 +207,11 @@ async def get_register_users(callback_query: CallbackQuery, state: FSMContext):
     file_stream = BytesIO()
     wb.save(file_stream)
     file_stream.seek(0)
-    filename = f"registered_users_{datetime.now().strftime("%Y-%m-%d")}.xlsx"
     # Создаем BufferedInputFile
-    document = BufferedInputFile(file=file_stream.read(), filename=filename)
+    document = BufferedInputFile(
+        file=file_stream.read(),
+        filename=f"registered_users_{datetime.now().strftime("%Y-%m-%d")}.xlsx",
+    )
     # Отправляем как документ
     await bot.send_document(
         chat_id=callback_query.from_user.id,
@@ -234,76 +236,77 @@ async def admin_panel(callback_query: CallbackQuery, state: FSMContext):
     )
 
 
+def get_todays_records():
+    """Получение за сегодняшний день"""
+    all_records = (
+        RecordDataWorkingStart.select()
+        .where(fn.DATE(RecordDataWorkingStart.date_event) == date.today())
+        .order_by(RecordDataWorkingStart.time_start.desc())
+    )
+    return all_records
+
+
 @router.callback_query(F.data == "who_at_work")
 async def who_at_work(callback_query: CallbackQuery):
     """✅ Получение пользователей, которые на работе"""
+    try:
+        logger.info(f"📋 Получение списка сотрудников на работе: {date.today()}")
+        all_records = get_todays_records()  # Получаем все записи
+        logger.info(all_records)
+        for record in all_records:
+            logger.info(
+                f"👤 {record.name} {record.surname} - {record.event_user_start}"
+            )
 
-    current_date = date.today()
-
-    # Получаем все записи за текущий день
-    start_of_day = datetime.combine(
-        current_date, datetime.min.time()
-    )  # Начало дня: 00:00
-    # Конец дня: 23:59:59.999999
-    end_of_day = datetime.combine(current_date, datetime.max.time())
-    all_records = (
-        RecordDataWorkingStart.select()
-        .where(
-            (RecordDataWorkingStart.time_start >= start_of_day)
-            & (RecordDataWorkingStart.time_start <= end_of_day)
-        )
-        .order_by(RecordDataWorkingStart.time_start.asc())
-    )
-
-    # Если записей нет, отправляем сообщение
-    if not all_records.exists():
-        logger.info("📭 На данный момент никто не на работе.")
+        all_records = list(get_todays_records())
+        # Если записей нет, отправляем сообщение
+        logger.info(all_records)
+        if not all_records:
+            logger.info("📭 На данный момент никто не на работе.")
+            await bot.send_message(
+                chat_id=callback_query.from_user.id,
+                text="📭 На данный момент никто не на работе.",
+                reply_markup=start_menu_keyboard(),
+            )
+            return
+        # Группируем записи по id_user, чтобы найти последнюю запись для каждого сотрудника
+        latest_records = {}
+        for record in all_records:
+            # Последняя запись перезапишет предыдущие
+            latest_records[record.id_user] = record
+        # Фильтруем сотрудников, которые "на работе" и ещё не вышли
+        users_at_work = [
+            record
+            for record in latest_records.values()
+            if record.event_user_start in ("на работе", "пришел на работу")
+            and not record.event_user_end
+        ]
+        # Формируем текст сообщения
+        if users_at_work:
+            user_list = "\n".join(
+                [
+                    (
+                        f"👤 <a href='https://t.me/{user.username}'>{user.name} {user.surname}</a>\n"
+                        f"📍 Адрес: {user.store_address}\n"
+                        f"📞 Телефон: {user.phone}\n"
+                        f"🕒 Время: {user.time_start.strftime('%H:%M')})\n"
+                    )
+                    for user in users_at_work
+                ]
+            )
+            message_text = f"📋 Список сотрудников на работе:\n\n{user_list}"
+        else:
+            message_text = "📭 На данный момент никто не на работе."
+        logger.info(message_text)
         await bot.send_message(
             chat_id=callback_query.from_user.id,
-            text="📭 На данный момент никто не на работе.",
+            text=message_text,
+            parse_mode="HTML",  # Режим разметки текста
+            disable_web_page_preview=True,  # Предварительный просмотр страницы
             reply_markup=start_menu_keyboard(),
         )
-        return
-
-    # Группируем записи по id_user, чтобы найти последнюю запись для каждого сотрудника
-    latest_records = {}
-    for record in all_records:
-        # Последняя запись перезапишет предыдущие
-        latest_records[record.id_user] = record
-
-    # Фильтруем сотрудников, которые "на работе"
-    users_at_work = [
-        record
-        for record in latest_records.values()
-        if record.event_user_start == "на работе"
-    ]
-
-    # Формируем текст сообщения
-    if users_at_work:
-        user_list = "\n".join(
-            [
-                (
-                    f"👤 <a href='https://t.me/{user.username}'>{user.name} {user.surname}</a>\n"
-                    f"📍 Адрес: {user.store_address}\n"
-                    f"📞 Телефон: {user.phone}\n"
-                    f"🕒 Время: {user.time_start.strftime('%H:%M')})\n"
-                )
-                for user in users_at_work
-            ]
-        )
-        message_text = f"📋 Список сотрудников на работе:\n\n{user_list}"
-    else:
-        message_text = "📭 На данный момент никто не на работе."
-
-    logger.info(message_text)
-
-    await bot.send_message(
-        chat_id=callback_query.from_user.id,
-        text=message_text,
-        parse_mode="HTML",  # Режим разметки текста
-        disable_web_page_preview=True,  # Предварительный просмотр страницы
-        reply_markup=start_menu_keyboard(),
-    )
+    except Exception as e:
+        logger.exception(e)
 
 
 def register_handler_who_at_work():

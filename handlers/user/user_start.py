@@ -126,13 +126,15 @@ async def handle_store_registration(callback_query: CallbackQuery):
     name, surname, phone, event_user_start = await send_user_registration_message(
         callback_query, store_address
     )
-
+    date_event = datetime.now()
+    logger.warning(date_event)
     recording_working_start_or_end(
         callback_query,
         name,
         surname,
         store_address,
         phone,
+        date_event=date_event,
         event_user_start=event_user_start,
         time_start=datetime.now(),
     )
