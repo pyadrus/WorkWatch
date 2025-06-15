@@ -13,6 +13,7 @@ from database import (
     AdminBlockUser,
     RecordDataWorkingStart,
 )
+from date_utility.date_utility import today
 from dispatcher import bot, router
 from handlers.user.user_start import (
     defining_event_by_gender,
@@ -138,13 +139,16 @@ STORE_ADDRESSES_END = {
 async def handle_store_end(callback_query: CallbackQuery):
     """✅ Обработчик выхода из смены для всех магазинов"""
 
-    # Проверяем, есть ли незавершённая запись (вход без выхода) за сегодня
-    today = datetime.now().date()
+    store_address = STORE_ADDRESSES_END[callback_query.data]  # Адрес магазина
+    # Ищем незавершённую запись именно для этого магазина
     record = (
         RecordDataWorkingStart.select()
         .where(
             (RecordDataWorkingStart.id_user == callback_query.from_user.id)
             & (fn.DATE(RecordDataWorkingStart.time_start) == today)
+            & (
+                RecordDataWorkingStart.store_address == store_address
+            )  # проверка магазина
             & (RecordDataWorkingStart.event_user_end.is_null(True))
         )
         .order_by(RecordDataWorkingStart.time_start.desc())
@@ -152,12 +156,14 @@ async def handle_store_end(callback_query: CallbackQuery):
     )
 
     if not record:
+        # Если не нашли запись по этому магазину - уведомляем и не записываем выход
         logger.warning(
-            f"Пользователь {callback_query.from_user.id} пытается отметить уход без входа"
+            f"Пользователь {callback_query.from_user.id} пытается выйти из магазина {store_address}, "
+            f"но нет входа в этот магазин сегодня."
         )
         await bot.send_message(
             chat_id=callback_query.from_user.id,
-            text="❌ Невозможно зафиксировать уход — вы не отметились на работу сегодня.",
+            text="❌ Невозможно зафиксировать уход — вы не отметились на работу сегодня или выбрали неверное место для завершения смены.",
             reply_markup=start_menu_keyboard(),
         )
         return  # Прерываем выполнение функции

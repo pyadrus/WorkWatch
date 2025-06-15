@@ -251,14 +251,7 @@ async def who_at_work(callback_query: CallbackQuery):
     """✅ Получение пользователей, которые на работе"""
     try:
         logger.info(f"📋 Получение списка сотрудников на работе: {date.today()}")
-        all_records = get_todays_records()  # Получаем все записи
-        logger.info(all_records)
-        for record in all_records:
-            logger.info(
-                f"👤 {record.name} {record.surname} - {record.event_user_start}"
-            )
-
-        all_records = list(get_todays_records())
+        all_records = list(get_todays_records())  # Получаем все записи
         # Если записей нет, отправляем сообщение
         logger.info(all_records)
         if not all_records:
@@ -269,11 +262,17 @@ async def who_at_work(callback_query: CallbackQuery):
                 reply_markup=start_menu_keyboard(),
             )
             return
-        # Группируем записи по id_user, чтобы найти последнюю запись для каждого сотрудника
+
+        # Группируем по (id_user, store_address), чтобы найти последнюю запись каждого сотрудника в каждом магазине
         latest_records = {}
         for record in all_records:
-            # Последняя запись перезапишет предыдущие
-            latest_records[record.id_user] = record
+            key = (record.id_user, record.store_address)
+            if (
+                key not in latest_records
+                or latest_records[key].time_start < record.time_start
+            ):
+                latest_records[key] = record
+
         # Фильтруем сотрудников, которые "на работе" и ещё не вышли
         users_at_work = [
             record
@@ -281,6 +280,7 @@ async def who_at_work(callback_query: CallbackQuery):
             if record.event_user_start in ("на работе", "пришел на работу")
             and not record.event_user_end
         ]
+
         # Формируем текст сообщения
         if users_at_work:
             user_list = "\n".join(
@@ -289,7 +289,7 @@ async def who_at_work(callback_query: CallbackQuery):
                         f"👤 <a href='https://t.me/{user.username}'>{user.name} {user.surname}</a>\n"
                         f"📍 Адрес: {user.store_address}\n"
                         f"📞 Телефон: {user.phone}\n"
-                        f"🕒 Время: {user.time_start.strftime('%H:%M')})\n"
+                        f"🕒 Время: {user.time_start.strftime('%H:%M')}\n"
                     )
                     for user in users_at_work
                 ]

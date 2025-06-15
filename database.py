@@ -4,6 +4,8 @@ from datetime import datetime
 from loguru import logger
 from peewee import *
 
+from date_utility.date_utility import today
+
 db = SqliteDatabase("base.db")
 
 
@@ -278,14 +280,13 @@ def is_user_already_registered_today(user_id):
     Проверяет, есть ли у пользователя запись за сегодняшний день.
     :param user_id: ID пользователя
     """
-    today = datetime.now().date()
     try:
-
         return (
             RecordDataWorkingStart.select()
             .where(
                 (RecordDataWorkingStart.id_user == user_id)
                 & (fn.DATE(RecordDataWorkingStart.time_start) == today)
+                & (RecordDataWorkingStart.event_user_end.is_null(True))  # важно!
             )
             .exists()
         )

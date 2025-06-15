@@ -37,9 +37,13 @@ STORE_ADDRESSES = {
 
 
 async def check_user_registration(callback_query):
+    """
+    Проверяет, не вошёл ли пользователь уже сегодня и не вышел ли он.
+    Если пользователь ещё не вышел — запрещаем повторную регистрацию.
+    """
     if is_user_already_registered_today(callback_query.from_user.id):
         await callback_query.message.answer(
-            text="Вы уже отметились сегодня. Повторная регистрация невозможна.",
+            text="Вы уже отметились сегодня и ещё не вышли. Повторная регистрация невозможна.",
             reply_markup=start_menu_keyboard(),
         )
         await callback_query.answer()
@@ -141,7 +145,7 @@ async def handle_store_registration(callback_query: CallbackQuery):
 
     await bot.send_message(
         chat_id=callback_query.from_user.id,
-        text="Вы успешно зарегистрированы. Хорошего дня!",
+        text=f"Вы успешно зарегистрированы по адресу {store_address}. Хорошего дня!",
         reply_markup=start_menu_keyboard(),
     )
 
